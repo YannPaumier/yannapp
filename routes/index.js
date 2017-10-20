@@ -1,9 +1,11 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+module.exports = (app) => {
+  /* GET home page. */
+  app.get('/', function (req, res, next) {
+    console.log('New connection ');
+    res.render('index.ejs', { pseudo: 'noname' });
+  });
 
-module.exports = router;
+};
