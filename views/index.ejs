@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -12,54 +11,46 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-
-    <!-- Custom styles for this template -->
-    <link href="cover.css" rel="stylesheet">
+    <!-- Custom css -->
+    <link href="/css/game.css" rel="stylesheet">
   </head>
 
+
   <body>
+    <div id="prompt" class="name-prompt">
+		<div class="input-group">
+	      <input id="char-name" type="text" class="form-control" placeholder="Name your character" autocomplete="off">
+	      <span class="input-group-btn">
+	        <input id="join" class="btn btn-primary" type="submit" value="Join the battle">
+	      </span>
+	    </div>
+	    <div class="char-select col-md-12">
+	    	<label>Choose your character:</label>
+	      	<ul class="char-selection">
+	      		<li class="selected" data-char="1">
+	      			<img width="20" src="sprites/character.png">
+	      		</li>
+	      		<li data-char="2">
+	      			<img width="20" src="sprites/character.png">
+	      		</li>
+	      		<li data-char="3">
+	      			<img width="20" src="sprites/character.png">
+	      		</li>
+	      	</ul>
+    	</div>
+	</div>
 
-    <div class="site-wrapper">
+    <div id="arena" class="arena">
+	   </div>
 
-      <div class="site-wrapper-inner">
-
-        <div class="cover-container">
-
-          <header class="masthead clearfix">
-            <div class="inner">
-              <h3 class="masthead-brand">Cover</h3>
-              <nav class="nav nav-masthead">
-                <a class="nav-link active" href="#">Home</a>
-                <a class="nav-link" href="#">Features</a>
-                <a class="nav-link" href="#">Contact</a>
-              </nav>
-            </div>
-          </header>
-
-          <main role="main" class="inner cover">
-            <h1 class="cover-heading">Cover your page.</h1>
-            <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
-            <p class="lead">
-              <a href="#" class="btn btn-lg btn-secondary">Learn more</a>
-            </p>
-          </main>
-
-          <footer class="mastfoot">
-            <div class="inner">
-              <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
-            </div>
-          </footer>
-
-        </div>
-
-      </div>
-
-    </div>
+  </body>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-  <script src="/socket.io/socket.io.js"></script>
 
-  </body>
+    <script src="/socket.io/socket.io.js"></script>
+  	<script type="text/javascript" src="js/game.js"></script>
+    <script type="text/javascript" src="js/character.js"></script>
+  	<script type="text/javascript" src="js/client.js"></script>
 </html>
