@@ -7,6 +7,11 @@ var bodyParser = require('body-parser');
 
 var app = express();
 
+// Socket.io
+var io = require('socket.io');
+var io = io();
+app.io = io;
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -16,10 +21,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 //Static resources server
 app.use(express.static(__dirname + '/www'));
+
 /*
  * Set des routes
  */
 require('./routes/index')(app);
+require('./routes/sockets')(app, io);
+
 
 // Setup a default catch-all route that sends back a welcome message in JSON format.
 app.get('*', (req, res) => res.status(200).send({

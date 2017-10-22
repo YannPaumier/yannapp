@@ -1,15 +1,19 @@
- const socket = io('http://localhost:3000/');
+const socket = io('http://localhost:3000/');
 var game = new Game();
 var selectedChar = 1;
 var charName = '';
 
-$(document).ready( function(){
+socket.on('addCharacter', function(character){
+  console.log('addCharacter '+character.name)
+	game.addCharacter(character.name, character.type);
+});
 
-  game.addCharacter();
+$(document).ready( function(){
 
   $('#join').click( function(){
 		characterName = $('#char-name').val();
-		joinGame(charName, selectedChar, socket);
+    console.log('join clicked with char name : '+characterName+' and selectedChar : '+selectedChar);
+		joinGame(characterName, selectedChar);
 	});
 
   $('ul.char-selection li').click( function(){
@@ -20,9 +24,9 @@ $(document).ready( function(){
 
 });
 
-function joinGame(charName, tankType, socket){
-	if(tankName != ''){
+function joinGame(charName, charType){
+	if(charName != ''){
 		$('#prompt').hide();
-		socket.emit('joinGame', {name: tankName, type: tankType});
+		socket.emit('joinGame', {name: charName, type: charType});
 	}
 }

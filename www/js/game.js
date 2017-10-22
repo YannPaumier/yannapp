@@ -6,8 +6,8 @@ function Game(){
 
 Game.prototype = {
 
-  addCharacter: function(){
-		var t = new Character( this.$arena );
+  addCharacter: function(name, type){
+		var t = new Character( name, type, this.$arena );
 	},
 
 }
