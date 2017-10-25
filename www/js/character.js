@@ -12,7 +12,7 @@ function Character(name, type, x, y, hp, $arena) {
 Character.prototype = {
 
   materialize: function () {
-    console.log('materialize char : ' + this.name + ' type : ' + this.type + ' x : ' + x + ' y : ' + y + ' hp : ' + hp);
+    console.log('materialize char : ' + this.name + ' type : ' + this.type + ' x : ' + this.x + ' y : ' + this.y + ' hp : ' + this.hp);
     this.$arena.append('<div id="" class="character">');
     this.$arena.append(this.type + this.name);
     this.$arena.append('</div>');
