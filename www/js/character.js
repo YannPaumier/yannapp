@@ -9,12 +9,19 @@ function Character(id, name, type, isLocal, x, y, hp, $arena) {
   this.h = 80;
   this.x = x;
   this.y = y;
+  this.characterAngle = 0;
+  /*
+  * Controls
+  */
   this.dir = {
     up: false,
     down: false,
     left: false,
     right: false,
   };
+  this.mx = null;
+  this.my = null;
+
   this.hp = hp;
   this.$arena = $arena;
   this.materialize();
@@ -57,6 +64,12 @@ Character.prototype = {
   refresh: function () {
     this.$body.css('left', this.x + 'px');
     this.$body.css('top', this.y + 'px');
+
+    //var cannonAbsAngle = this.cannonAngle - this.baseAngle;
+		this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+		this.$body.css('-moz-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+		this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+		this.$body.css('transform', 'rotateZ(' + this.characterAngle + 'deg)');
 
     this.$info.css('left', (this.x) + 'px');
     this.$info.css('top', (this.y) + 'px');
@@ -101,9 +114,9 @@ Character.prototype = {
         break;
       }
     }).mousemove(function (e) { //Detect mouse for aiming
-      //t.mx = e.pageX - t.$arena.offset().left;
-      //t.my = e.pageY - t.$arena.offset().top;
-      //t.setCannonAngle();
+      t.mx = e.pageX - t.$arena.offset().left;
+      t.my = e.pageY - t.$arena.offset().top;
+      t.setCharacterAngle();
     }).click(function () {
       //t.shoot();
     });
@@ -142,7 +155,15 @@ Character.prototype = {
     }
 
     //this.rotateBase();
-    //this.setCannonAngle();
+    this.setCharacterAngle();
     this.refresh();
+  },
+
+  setCharacterAngle: function () {
+    var char = { x: this.x, y: this.y };
+    var deltaX = this.mx - char.x;
+    var deltaY = this.my - char.y;
+    this.characterAngle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+    this.characterAngle += 90;
   },
 };
