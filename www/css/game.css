@@ -15,6 +15,8 @@ body{
 }
 .arena{
 	margin: 10px auto;
+	width: 1100px;
+	height: 580px;
 	background-color: white;
 	position: relative;
 	pointer-events: none;
@@ -22,8 +24,9 @@ body{
 .character{
 	position: absolute;
 	background-repeat: no-repeat;
-	background-position: -10px 0;
+/* background-position: -10px 0; */
 }
+/*
 .weapon{
 	position: absolute;
 	top: -25px;
@@ -36,10 +39,10 @@ body{
 		 -o-transform-origin: 30px 65px;
 			transform-origin: 30px 65px;
 }
+*/
 .character1{
 	background-image: url(../sprites/character.png);
 	background-size: 40px 40px;
-	background-repeat: no-repeat;
 }
 .info{
 	width: 100px;
@@ -47,8 +50,8 @@ body{
 	position: absolute;
 	top: 0;
 	left: 0;
-	margin-top: -85px;
-	margin-left: -50px;
+	margin-top: -35px;
+	margin-left: -0px;
 	opacity: .8;
 }
 .label{

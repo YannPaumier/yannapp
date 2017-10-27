@@ -4,8 +4,8 @@ var selectedChar = 1;
 var charName = '';
 
 socket.on('addCharacter', function (character) {
-  console.log('addCharacter ' + character.name);
-  game.addCharacter(character.name, character.type, character.x, character.y, character.hp);
+  console.log('addCharacter : ' + character.name + ' id : ' + character.id + ' type : ' + character.type + ' isLocal : ' + character.isLocal);
+  game.addCharacter(character.id, character.name, character.type, character.isLocal, character.x, character.y, character.hp);
 });
 
 $(document).ready(function () {

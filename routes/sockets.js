@@ -13,9 +13,9 @@ module.exports = (app, io) => {
       var initX = game.getRandomInt(40, 900);
       var initY = game.getRandomInt(40, 500);
 
-      console.log('player id : ' + playerId + 'initX: ' + initX + ' initY : ' + initY);
-      client.emit('addCharacter', { id: playerId, name: character.name, type: character.type, x: initX, y: initY, hp: game.getCharacterHP() });
-      client.broadcast.emit('addCharacter', { id: playerId, name: character.name, type: character.type, x: initX, y: initY, hp: game.getCharacterHP() });
+      console.log('player id : ' + playerId + ' initX: ' + initX + ' initY : ' + initY);
+      client.emit('addCharacter', { id: playerId, name: character.name, type: character.type, isLocal: true, x: initX, y: initY, hp: game.getCharacterHP() });
+      client.broadcast.emit('addCharacter', { id: playerId, name: character.name, type: character.type, isLocal: false, x: initX, y: initY, hp: game.getCharacterHP() });
     });
 
   });
