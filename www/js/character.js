@@ -1,3 +1,5 @@
+const socket = io('http://localhost:3000/');
+
 const ARENA_MARGIN = 30;
 
 function Character(id, name, type, isLocal, x, y, hp, $arena) {
@@ -5,8 +7,9 @@ function Character(id, name, type, isLocal, x, y, hp, $arena) {
   this.name = name;
   this.type = type;
   this.isLocal = isLocal;
-  this.w = 60;
-  this.h = 80;
+  this.speed = 5;
+  this.w = 40;
+  this.h = 28;
   this.x = x;
   this.y = y;
   this.characterAngle = 0;
@@ -62,8 +65,8 @@ Character.prototype = {
   },
 
   refresh: function () {
-    this.$body.css('left', this.x + 'px');
-    this.$body.css('top', this.y + 'px');
+    this.$body.css('left', this.x -20 + 'px');
+    this.$body.css('top', this.y -14 + 'px');
 
     //var cannonAbsAngle = this.cannonAngle - this.baseAngle;
 		this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
@@ -118,7 +121,7 @@ Character.prototype = {
       t.my = e.pageY - t.$arena.offset().top;
       t.setCharacterAngle();
     }).click(function () {
-      //t.shoot();
+      t.shoot();
     });
 
   },
@@ -143,8 +146,8 @@ Character.prototype = {
       moveX = 1;
     }
 
-    //moveX = this.speed * moveX;
-    //moveY = this.speed * moveY;
+    moveX = this.speed * moveX;
+    moveY = this.speed * moveY;
 
     if (this.x + moveX > (0 + ARENA_MARGIN) && (this.x + moveX) < (this.$arena.width() - ARENA_MARGIN)){
       this.x += moveX;
@@ -166,4 +169,26 @@ Character.prototype = {
     this.characterAngle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
     this.characterAngle += 90;
   },
+
+  shoot: function(){
+/*
+    if(this.dead){
+			return;
+		}
+*/
+		//Emit ball to server
+		var serverBall = {};
+		//Just for local balls who have owner
+		serverBall.alpha = this.characterAngle * Math.PI / 180; //angle of shot in radians
+		//Set init position
+		var cannonLength = 20;
+		var deltaX = cannonLength * Math.sin(serverBall.alpha);
+		var deltaY = cannonLength * Math.cos(serverBall.alpha);
+
+		serverBall.ownerId = this.id;
+		serverBall.x = this.x + deltaX - 5;
+		serverBall.y = this.y - deltaY - 5;
+
+		socket.emit('shoot', serverBall);
+	}
 };

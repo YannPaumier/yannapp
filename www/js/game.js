@@ -1,4 +1,3 @@
-
 var INTERVAL = 50;
 
 function Game() {
@@ -25,7 +24,7 @@ Game.prototype = {
   mainLoop: function () {
     if (this.localCharacter != undefined) {
       //send data to server about local tank
-      //this.sendData();
+      this.sendData();
 
       //move local tank
       this.localCharacter.move();
@@ -36,7 +35,7 @@ Game.prototype = {
     //Send local data to server
     var gameData = {};
 
-    //Send tank data
+    //Send character data
     var c = {
       id: this.localCharacter.id,
       x: this.localCharacter.x,
@@ -48,6 +47,22 @@ Game.prototype = {
 
     //Client game does not send any info about balls,
     //the server controls that part
-    this.socket.emit('sync', gameData);
+    socket.emit('sync', gameData);
+  },
+
+  receiveData: function (serverData) {
+    var game = this;
+
+    //Render balls
+		game.$arena.find('.cannon-ball').remove();
+
+		serverData.balls.forEach( function(serverBall) {
+      //console.log('new ball : '+serverBall.y);
+			var b = new Weapon(serverBall.id, serverBall.ownerId, game.$arena, serverBall.x, serverBall.y);
+			//b.exploding = serverBall.exploding;
+			if(b.exploding){
+				b.explode();
+			}
+		});
   },
 };

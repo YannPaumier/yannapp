@@ -1,4 +1,3 @@
-const socket = io('http://localhost:3000/');
 var game = new Game();
 var selectedChar = 1;
 var charName = '';
@@ -6,6 +5,10 @@ var charName = '';
 socket.on('addCharacter', function (character) {
   console.log('addCharacter : ' + character.name + ' id : ' + character.id + ' type : ' + character.type + ' isLocal : ' + character.isLocal);
   game.addCharacter(character.id, character.name, character.type, character.isLocal, character.x, character.y, character.hp);
+});
+
+socket.on('sync', function(gameServerData){
+	game.receiveData(gameServerData);
 });
 
 $(document).ready(function () {
