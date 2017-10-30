@@ -7,8 +7,8 @@ socket.on('addCharacter', function (character) {
   game.addCharacter(character.id, character.name, character.type, character.isLocal, character.x, character.y, character.hp);
 });
 
-socket.on('sync', function(gameServerData){
-	game.receiveData(gameServerData);
+socket.on('sync', function (gameServerData) {
+  game.receiveData(gameServerData);
 });
 
 $(document).ready(function () {

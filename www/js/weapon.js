@@ -1,9 +1,11 @@
-function Weapon(id, ownerId, $arena, x, y){
+function Weapon(id, ownerId, $arena, x, y) {
 	this.id = id;
 	this.ownerId = ownerId;
 	this.$arena = $arena;
 	this.x = x;
 	this.y = y;
+
+	this.exploding = false;
 
 	this.materialize();
 }

@@ -3,6 +3,7 @@ const socket = io('http://localhost:3000/');
 const ARENA_MARGIN = 30;
 
 function Character(id, name, type, isLocal, x, y, hp, $arena) {
+  this.$arena = $arena;
   this.id = id;
   this.name = name;
   this.type = type;
@@ -26,7 +27,8 @@ function Character(id, name, type, isLocal, x, y, hp, $arena) {
   this.my = null;
 
   this.hp = hp;
-  this.$arena = $arena;
+  this.dead = false;
+
   this.materialize();
 }
 
@@ -42,10 +44,10 @@ Character.prototype = {
     this.$body.css('height', this.h);
 
     // Set de sa position
-    this.$body.css('-webkit-transform', 'rotateZ(' + 90 + 'deg)');
-    this.$body.css('-moz-transform', 'rotateZ(' + 90 + 'deg)');
-    this.$body.css('-o-transform', 'rotateZ(' + 90 + 'deg)');
-    this.$body.css('transform', 'rotateZ(' + 90 + 'deg)');
+    this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+    this.$body.css('-moz-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+    this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+    this.$body.css('transform', 'rotateZ(' + this.characterAngle + 'deg)');
 
     // Ajout de l'amre
     this.$body.append('<div id="weapon-' + this.id + '" class="weapon"></div>');
@@ -65,17 +67,21 @@ Character.prototype = {
   },
 
   refresh: function () {
-    this.$body.css('left', this.x -20 + 'px');
-    this.$body.css('top', this.y -14 + 'px');
+    this.$body.css('left', this.x - 20 + 'px');
+    this.$body.css('top', this.y - 14 + 'px');
 
     //var cannonAbsAngle = this.cannonAngle - this.baseAngle;
-		this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-		this.$body.css('-moz-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-		this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-		this.$body.css('transform', 'rotateZ(' + this.characterAngle + 'deg)');
+  	this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+  	this.$body.css('-moz-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+  	this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+  	this.$body.css('transform', 'rotateZ(' + this.characterAngle + 'deg)');
 
     this.$info.css('left', (this.x) + 'px');
     this.$info.css('top', (this.y) + 'px');
+
+    this.$info.find('.hp-bar').css('width', (80 / 100 * this.hp) + 'px');
+    this.$info.find('.hp-bar').css('background-color', getGreenToRed(this.hp));
+
   },
 
   setControls: function () {
@@ -170,25 +176,26 @@ Character.prototype = {
     this.characterAngle += 90;
   },
 
-  shoot: function(){
-/*
-    if(this.dead){
-			return;
-		}
-*/
-		//Emit ball to server
-		var serverBall = {};
-		//Just for local balls who have owner
-		serverBall.alpha = this.characterAngle * Math.PI / 180; //angle of shot in radians
-		//Set init position
-		var cannonLength = 20;
-		var deltaX = cannonLength * Math.sin(serverBall.alpha);
-		var deltaY = cannonLength * Math.cos(serverBall.alpha);
+  shoot: function () {
+  /*
+      if(this.dead){
+  			return;
+  		}
+  */
+  //Emit ball to server
+  var serverBall = {};
+  //Just for local balls who have owner
+  serverBall.alpha = this.characterAngle * Math.PI / 180; //angle of shot in radians
+  //Set init position
+  var cannonLength = 20;
+  var deltaX = cannonLength * Math.sin(serverBall.alpha);
+  var deltaY = cannonLength * Math.cos(serverBall.alpha);
 
-		serverBall.ownerId = this.id;
-		serverBall.x = this.x + deltaX - 5;
-		serverBall.y = this.y - deltaY - 5;
+  serverBall.ownerId = this.id;
+  serverBall.x = this.x + deltaX - 5;
+  serverBall.y = this.y - deltaY - 5;
 
-		socket.emit('shoot', serverBall);
-	}
+  socket.emit('shoot', serverBall);
+},
+
 };
