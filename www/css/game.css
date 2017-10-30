@@ -17,7 +17,6 @@ body{
 	margin: 10px auto;
 	width: 1100px;
 	height: 580px;
-	background-color: ;
 	background-image: url(../sprites/ground1.jpg);
 	background-repeat:repeat;
 	background-size: 150px;
@@ -48,7 +47,7 @@ body{
 }
 */
 .character1{
-	background-image: url(../sprites/character.png);
+	background-image: url(../sprites/idle_with_AK.gif);
 	background-size: 40px 28px;
 }
 .character2{

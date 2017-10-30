@@ -177,11 +177,11 @@ Character.prototype = {
   },
 
   shoot: function () {
-  /*
-      if(this.dead){
-  			return;
-  		}
-  */
+
+  if(this.dead){
+    return;
+  }
+
   //Emit ball to server
   var serverBall = {};
   //Just for local balls who have owner
