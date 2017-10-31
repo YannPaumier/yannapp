@@ -47,7 +47,7 @@ body{
 }
 */
 .character1{
-	background-image: url(../sprites/idle_with_AK.gif);
+	background-image: url(../sprites/character.png);
 	background-size: 40px 28px;
 }
 .character2{

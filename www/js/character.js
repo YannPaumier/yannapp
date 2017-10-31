@@ -137,6 +137,8 @@ Character.prototype = {
       return;
     }
 
+    //this.$body.css('background-image', 'url(../sprites/run_AK.gif');
+
     var moveX = 0;
     var moveY = 0;
 

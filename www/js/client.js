@@ -1,3 +1,4 @@
+
 var game = new Game();
 var selectedChar = 1;
 var charName = '';
