@@ -1,5 +1,3 @@
-const socket = io('http://localhost:3000/');
-
 const ARENA_MARGIN = 30;
 
 function Character(id, name, type, isLocal, x, y, hp, $arena) {

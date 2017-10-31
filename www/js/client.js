@@ -33,7 +33,7 @@ $(document).ready(function () {
 });
 
 $(window).on('beforeunload', function () {
-  socket.emit('leaveGame', characterName);
+  socket.emit('leaveGame', tankName);
 });
 
 function joinGame(charName, charType) {
