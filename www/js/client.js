@@ -12,6 +12,10 @@ socket.on('sync', function (gameServerData) {
   game.receiveData(gameServerData);
 });
 
+socket.on('removeCharacter', function (characterId) {
+  game.removeCharacter(characterId);
+});
+
 $(document).ready(function () {
 
   $('#join').click(function () {
@@ -26,6 +30,10 @@ $(document).ready(function () {
     selectedChar = $(this).data('char');
   });
 
+});
+
+$(window).on('beforeunload', function () {
+  socket.emit('leaveGame', characterName);
 });
 
 function joinGame(charName, charType) {

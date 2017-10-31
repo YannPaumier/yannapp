@@ -22,9 +22,9 @@ Game.prototype = {
   },
 
   removeCharacter: function (characterId) {
-    //Remove tank object
+    //Remove character object
     this.characters = this.characters.filter(function (c) {return c.id != characterId });
-    //remove tank from dom
+    //remove character from dom
     $('#' + characterId).remove();
     $('#info-' + characterId).remove();
   },

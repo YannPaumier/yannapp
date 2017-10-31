@@ -4,6 +4,10 @@ const ARENA_MARGIN = 30;
 
 function Character(id, name, type, isLocal, x, y, hp, $arena) {
   this.$arena = $arena;
+
+  /*
+  * Character infos
+  */
   this.id = id;
   this.name = name;
   this.type = type;
@@ -11,9 +15,18 @@ function Character(id, name, type, isLocal, x, y, hp, $arena) {
   this.speed = 5;
   this.w = 80;
   this.h = 56;
+
+  this.hp = hp;
+  this.dead = false;
+  this.isMoving = false;
+
+  /*
+  * Position
+  */
   this.x = x;
   this.y = y;
   this.characterAngle = 0;
+
   /*
   * Controls
   */
@@ -25,10 +38,6 @@ function Character(id, name, type, isLocal, x, y, hp, $arena) {
   };
   this.mx = null;
   this.my = null;
-
-  this.hp = hp;
-  this.dead = false;
-  this.isMoving = false;
 
   this.materialize();
 }

@@ -22,6 +22,11 @@ Game.prototype = {
       this.balls.push(ball);
     },
 
+    removeCharacter: function (characterId) {
+        this.characters = this.characters.filter(
+        function (t) { return t.id != characterId; });
+      },
+
     //Sync tank with new data received from a client
     syncCharacter: function (newCharacterData) {
       this.characters.forEach(function (character) {

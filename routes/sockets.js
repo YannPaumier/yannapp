@@ -49,5 +49,11 @@ module.exports = (app, io, game) => {
       game.addBall(ballData);
     });
 
+    client.on('leaveGame', function (characterId) {
+      console.log(characterId + ' has left the game');
+      game.removeCharacter(characterId);
+      client.broadcast.emit('removeCharacter', characterId);
+    });
+
   });
 };
