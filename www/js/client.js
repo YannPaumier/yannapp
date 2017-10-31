@@ -1,4 +1,3 @@
-
 var game = new Game();
 var selectedChar = 1;
 var charName = '';
@@ -33,7 +32,7 @@ $(document).ready(function () {
 });
 
 $(window).on('beforeunload', function () {
-  socket.emit('leaveGame', tankName);
+  socket.emit('leaveGame', charName);
 });
 
 function joinGame(charName, charType) {
