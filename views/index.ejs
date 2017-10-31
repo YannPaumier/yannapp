@@ -18,26 +18,38 @@
 
   <body>
     <div id="prompt" class="name-prompt">
-		<div class="input-group">
-	      <input id="char-name" type="text" class="form-control" placeholder="Name your character" autocomplete="off">
-	      <span class="input-group-btn">
-	        <input id="join" class="btn btn-primary" type="submit" value="Join the battle">
-	      </span>
-	    </div>
+      <div class="retro-arena">GROS ARENA</div>
 	    <div class="char-select col-md-12">
-	    	<label>Choose you destiny :</label>
+	    	<label>Choose you destiny</label>
 	      	<ul class="char-selection">
 	      		<li class="selected" data-char="1">
+              <div class="class-name">Hunter</div>
 	      			<img width="60" src="sprites/character.png">
 	      		</li>
 	      		<li data-char="2">
+              <div class="class-name">Warrior</div>
 	      			<img width="60" src="sprites/character.png">
 	      		</li>
 	      		<li data-char="3">
+              <div class="class-name">Mage</div>
+	      			<img width="60" src="sprites/character.png">
+	      		</li>
+            <li data-char="3">
+              <div class="class-name">Assassin</div>
+	      			<img width="60" src="sprites/character.png">
+	      		</li>
+            <li data-char="3">
+              <div class="class-name">Paladin</div>
 	      			<img width="60" src="sprites/character.png">
 	      		</li>
 	      	</ul>
     	</div>
+      <div class="input-group char-name">
+  	      <input id="char-name" type="text" class="form-control-sm" placeholder="Name your character" autocomplete="off">
+  	      <span class="input-group-btn">
+  	        <input id="join" class="btn btn-primary" type="submit" value="Join the battle">
+  	      </span>
+  	   </div>
 	</div>
 
     <div id="arena" class="arena">
