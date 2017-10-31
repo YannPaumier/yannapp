@@ -9,8 +9,8 @@ function Character(id, name, type, isLocal, x, y, hp, $arena) {
   this.type = type;
   this.isLocal = isLocal;
   this.speed = 5;
-  this.w = 40;
-  this.h = 28;
+  this.w = 80;
+  this.h = 56;
   this.x = x;
   this.y = y;
   this.characterAngle = 0;
@@ -28,6 +28,7 @@ function Character(id, name, type, isLocal, x, y, hp, $arena) {
 
   this.hp = hp;
   this.dead = false;
+  this.isMoving = false;
 
   this.materialize();
 }
@@ -67,8 +68,8 @@ Character.prototype = {
   },
 
   refresh: function () {
-    this.$body.css('left', this.x - 20 + 'px');
-    this.$body.css('top', this.y - 14 + 'px');
+    this.$body.css('left', this.x - (this.w / 2) + 'px');
+    this.$body.css('top', this.y - (this.h / 2)  + 'px');
 
     //var cannonAbsAngle = this.cannonAngle - this.baseAngle;
   	this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
@@ -79,7 +80,7 @@ Character.prototype = {
     this.$info.css('left', (this.x) + 'px');
     this.$info.css('top', (this.y) + 'px');
 
-    this.$info.find('.hp-bar').css('width', (80 / 100 * this.hp) + 'px');
+    this.$info.find('.hp-bar').css('width', this.hp + 'px');
     this.$info.find('.hp-bar').css('background-color', getGreenToRed(this.hp));
 
   },
@@ -136,9 +137,6 @@ Character.prototype = {
     if (this.dead) {
       return;
     }
-
-    //this.$body.css('background-image', 'url(../sprites/run_AK.gif');
-
     var moveX = 0;
     var moveY = 0;
 
@@ -168,6 +166,7 @@ Character.prototype = {
     //this.rotateBase();
     this.setCharacterAngle();
     this.refresh();
+
   },
 
   setCharacterAngle: function () {
@@ -176,6 +175,18 @@ Character.prototype = {
     var deltaY = this.my - char.y;
     this.characterAngle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
     this.characterAngle += 90;
+  },
+
+  anime: function () {
+    char = this;
+    if (char.dir.up || char.dir.down || char.dir.left || char.dir.right)
+    {
+      char.isMoving = true;
+      char.$body.css('background-image', 'url(../sprites/character.png');
+    }else {
+      char.isMoving = false;
+      char.$body.css('background-image', 'url(../sprites/character.png');
+    }
   },
 
   shoot: function () {

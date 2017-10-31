@@ -49,8 +49,9 @@ Game.prototype = {
       //send data to server about local tank
       this.sendData();
 
-      //move local tank
+      //move local character
       this.localCharacter.move();
+      this.localCharacter.anime();
     }
   },
 
