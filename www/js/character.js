@@ -37,6 +37,16 @@ function Character(id, name, type, isLocal, x, y, hp, speed, $arena) {
   };
   this.mx = null;
   this.my = null;
+  this.spells = {
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+    a: false,
+    e: false,
+    r: false,
+    f: false,
+  };
 
   this.materialize();
 }
@@ -58,10 +68,6 @@ Character.prototype = {
     this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
     this.$body.css('transform', 'rotateZ(' + this.characterAngle + 'deg)');
 
-    // Ajout de l'amre
-    this.$body.append('<div id="weapon-' + this.id + '" class="weapon"></div>');
-    this.$weapon = $('#weapon-' + this.id);
-
     // Ajout des infos du character
     this.$arena.append('<div id="info-' + this.id + '" class="info"></div>');
     this.$info = $('#info-' + this.id);
@@ -69,17 +75,12 @@ Character.prototype = {
     this.$info.append('<div class="hp-bar"></div>');
 
     this.refresh();
-
-    if (this.isLocal) {
-      this.setControls();
-    };
   },
 
   refresh: function () {
     this.$body.css('left', this.x - (this.w / 2) + 'px');
     this.$body.css('top', this.y - (this.h / 2)  + 'px');
 
-    //var cannonAbsAngle = this.cannonAngle - this.baseAngle;
   	this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
   	this.$body.css('-moz-transform', 'rotateZ(' + this.characterAngle + 'deg)');
   	this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
@@ -90,54 +91,6 @@ Character.prototype = {
 
     this.$info.find('.hp-bar').css('width', (this.hp * 100) / this.initHp + 'px');
     this.$info.find('.hp-bar').css('background-color', getGreenToRed(this.hp * 100) / this.initHp);
-
-  },
-
-  setControls: function () {
-    var t = this;
-
-    /* Detect both keypress and keyup to allow multiple keys
-    and combined directions */
-    $(document).keypress(function (e) {
-      var k = e.keyCode || e.which;
-      switch (k){
-        case 122: //W
-          t.dir.up = true;
-        break;
-        case 100: //D
-          t.dir.right = true;
-        break;
-        case 115: //S
-          t.dir.down = true;
-        break;
-        case 113: //A
-          t.dir.left = true;
-        break;
-      }
-
-    }).keyup(function (e) {
-      var k = e.keyCode || e.which;
-      switch (k){
-        case 90: //W
-          t.dir.up = false;
-        break;
-        case 68: //D
-          t.dir.right = false;
-        break;
-        case 83: //S
-          t.dir.down = false;
-        break;
-        case 81: //A
-          t.dir.left = false;
-        break;
-      }
-    }).mousemove(function (e) { //Detect mouse for aiming
-      t.mx = e.pageX - t.$arena.offset().left;
-      t.my = e.pageY - t.$arena.offset().top;
-      t.setCharacterAngle();
-    }).click(function () {
-      t.shoot();
-    });
 
   },
 
