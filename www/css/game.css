@@ -1,4 +1,5 @@
 body{
+	cursor: crosshair;
 	background-color: #ddd;
 	font-family: "League-Gothic", Courier;
 	overflow: hidden;
@@ -70,13 +71,26 @@ body{
 	background-size: 80px 56px;
 }
 .character2{
+	z-index: 1;
 	background-image: url(../sprites/character.png);
-	background-size: 40px 28px;
+	background-size: 80px 56px;
 }
 .character3{
+	z-index: 1;
 	background-image: url(../sprites/character.png);
-	background-size: 40px 28px;
+	background-size: 80px 56px;
 }
+.character4{
+	z-index: 1;
+	background-image: url(../sprites/character.png);
+	background-size: 80px 56px;
+}
+.character5{
+	z-index: 1;
+	background-image: url(../sprites/character.png);
+	background-size: 80px 56px;
+}
+
 .explosion{
 	position: absolute;
 	width: 50px;

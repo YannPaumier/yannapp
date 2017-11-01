@@ -166,10 +166,11 @@ Character.prototype = {
     // Detection collision
     var collisionX = false;
     var collisionY = false;
+    var collision = false;
 
     var obst1 = {x: 250, y: (this.$arena.height()) - 500, width: 150, height: 300};
     var obst2 = {x: 880, y: (this.$arena.height()) - 500, width: 150, height: 300}
-    var collision = false;
+
     if (obst1.x < this.x + 20 + moveX &&
        obst1.x + obst1.width > (this.x + moveX) - 20 &&
        obst1.y < (this.$arena.height()) - (this.y + moveY) + 20 &&
