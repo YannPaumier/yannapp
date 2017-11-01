@@ -1,8 +1,7 @@
 module.exports = (app, io, game) => {
 
-
   var helpers = require('../game/helpers.js');
-  var characterCarac = require('../configs/character.js');
+
 
   var globalPlayerId = 0;
 
@@ -14,14 +13,23 @@ module.exports = (app, io, game) => {
       var playerId = globalPlayerId++;
 
       // Set de la position du joueur
-      var initX = helpers.getRandomInt(40, 900);
-      var initY = helpers.getRandomInt(40, 500);
+      if(helpers.isEven(playerId)){
+        var initX = helpers.getRandomInt(30, 230);
+        var initY = helpers.getRandomInt(200, 500);
+      }else{
+        var initX = helpers.getRandomInt(1000, 1200);
+        var initY = helpers.getRandomInt(200, 500);
+      }
 
-      console.log('player id : ' + playerId + ' initX: ' + initX + ' initY : ' + initY);
-      client.emit('addCharacter', { id: playerId, name: character.name, type: character.type, isLocal: true, x: initX, y: initY, hp: characterCarac.getCharacterHP() });
-      client.broadcast.emit('addCharacter', { id: playerId, name: character.name, type: character.type, isLocal: false, x: initX, y: initY, hp: characterCarac.getCharacterHP() });
+      // Récupération des infos de la classe
+      var infos = helpers.getCharacterInfos(character.type);
 
-      game.addCharacter({ id: playerId, name: character.name, type: character.type, hp: 100 });
+      game.addCharacter( { id: playerId, name: character.name, type: character.type, hp: infos.stats.vitality } );
+
+      //console.log('player id : ' + playerId + ' initX: ' + initX + ' initY : ' + initY);
+      client.emit('addCharacter', { id: playerId, name: character.name, type: character.type, isLocal: true, x: initX, y: initY, hp: infos.stats.vitality, speed: infos.stats.speed });
+      client.broadcast.emit('addCharacter', { id: playerId, name: character.name, type: character.type, isLocal: false, x: initX, y: initY, hp: infos.stats.vitality, speed: infos.stats.speed });
+
     });
 
     client.on('sync', function (data) {
@@ -49,8 +57,8 @@ module.exports = (app, io, game) => {
       game.addBall(ballData);
     });
 
-    client.on('leaveGame', function (characterId) {
-      console.log(characterId + ' has left the game');
+    client.on('leaveGame', function (characterName, characterId) {
+      console.log(characterName + ' has left the game, id : ' + characterId);
       game.removeCharacter(characterId);
       client.broadcast.emit('removeCharacter', characterId);
     });

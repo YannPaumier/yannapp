@@ -1,6 +1,6 @@
 const ARENA_MARGIN = 30;
 
-function Character(id, name, type, isLocal, x, y, hp, $arena) {
+function Character(id, name, type, isLocal, x, y, hp, speed, $arena) {
   this.$arena = $arena;
 
   /*
@@ -9,12 +9,13 @@ function Character(id, name, type, isLocal, x, y, hp, $arena) {
   this.id = id;
   this.name = name;
   this.type = type;
+  this.initHp = hp;
+  this.hp = hp;
   this.isLocal = isLocal;
-  this.speed = 5;
+  this.speed = speed / 10;
   this.w = 80;
   this.h = 56;
 
-  this.hp = hp;
   this.dead = false;
   this.isMoving = false;
 
@@ -87,8 +88,8 @@ Character.prototype = {
     this.$info.css('left', (this.x) + 'px');
     this.$info.css('top', (this.y) + 'px');
 
-    this.$info.find('.hp-bar').css('width', this.hp + 'px');
-    this.$info.find('.hp-bar').css('background-color', getGreenToRed(this.hp));
+    this.$info.find('.hp-bar').css('width', (this.hp * 100) / this.initHp + 'px');
+    this.$info.find('.hp-bar').css('background-color', getGreenToRed(this.hp * 100) / this.initHp);
 
   },
 
@@ -162,11 +163,31 @@ Character.prototype = {
     moveX = this.speed * moveX;
     moveY = this.speed * moveY;
 
-    if (this.x + moveX > (0 + ARENA_MARGIN) && (this.x + moveX) < (this.$arena.width() - ARENA_MARGIN)){
+    // Detection collision
+    var collisionX = false;
+    var collisionY = false;
+
+    var obst1 = {x: 250, y: (this.$arena.height()) - 500, width: 150, height: 300};
+    var obst2 = {x: 880, y: (this.$arena.height()) - 500, width: 150, height: 300}
+    var collision = false;
+    if (obst1.x < this.x + 20 + moveX &&
+       obst1.x + obst1.width > (this.x + moveX) - 20 &&
+       obst1.y < (this.$arena.height()) - (this.y + moveY) + 20 &&
+       obst1.height + obst1.y > (this.$arena.height()) - (this.y + moveY) -20 ){
+        collision = true;
+    }
+    if (obst2.x < this.x + 20 + moveX &&
+       obst2.x + obst2.width > (this.x + moveX) - 20 &&
+       obst2.y < (this.$arena.height()) - (this.y + moveY) + 20 &&
+       obst2.height + obst2.y > (this.$arena.height()) - (this.y + moveY) -20 ){
+        collision = true;
+    }
+
+    if ( !collision && this.x + moveX > (0 + ARENA_MARGIN) && (this.x + moveX) < (this.$arena.width() - ARENA_MARGIN)){
       this.x += moveX;
     }
 
-    if (this.y + moveY > (0 + ARENA_MARGIN) && (this.y + moveY) < (this.$arena.height() - ARENA_MARGIN)){
+    if ( !collision && this.y + moveY > (0 + ARENA_MARGIN) && (this.y + moveY) < (this.$arena.height() - ARENA_MARGIN)){
       this.y += moveY;
     }
 

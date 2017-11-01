@@ -5,15 +5,43 @@ body{
 }
 .arena{
 	margin: 10px auto;
-	width: 1100px;
-	height: 580px;
+	width: 1280px;
+	height: 720px;
+	z-index: 1;
 	background-image: url(../sprites/ground1.jpg);
 	background-repeat:repeat;
-	background-size: 150px;
+	background-size: 170px;
 	position: relative;
 	pointer-events: none;
 }
-
+.obstacle1{
+	background-image: url(../sprites/walltexture2.jpg);
+	border-radius: 5%;
+	border: 3px solid;
+  border-radius: ;
+	z-index: 2;
+	background-repeat:repeat;
+	background-size: 50px;
+	position: absolute;
+	width: 150px;
+	height:300px;
+	left: 250px;
+	top: 200px;
+}
+.obstacle2{
+	background-image: url(../sprites/walltexture2.jpg);
+	border-radius: 5%;
+	border: 3px solid;
+  border-radius: ;
+	z-index: 2;
+	background-repeat:repeat;
+	background-size: 50px;
+	position: absolute;
+	width: 150px;
+	height:300px;
+	left: 880px;
+	top: 200px;
+}
 /*
 * Characters
 */
@@ -37,6 +65,7 @@ body{
 }
 */
 .character1{
+	z-index: 1;
 	background-image: url(../sprites/character.png);
 	background-size: 80px 56px;
 }
@@ -152,6 +181,7 @@ body{
 }
 .char-name{
 	margin-top: 10px;
+	margin-bottom: 10px;
 	margin-left: 100px;
 }
 .char-selection{

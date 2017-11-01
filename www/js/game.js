@@ -1,6 +1,7 @@
 var INTERVAL = 50;
 
 function Game() {
+  //this.localCharacter = '';
   this.characters = []; //Characters (other than the local character)
   this.$arena = $('#arena');
 
@@ -12,8 +13,8 @@ function Game() {
 
 Game.prototype = {
 
-  addCharacter: function (id, name, type, isLocal, x, y, hp) {
-    var c = new Character(id, name, type, isLocal, x, y, hp, this.$arena);
+  addCharacter: function (id, name, type, isLocal, x, y, hp, speed) {
+    var c = new Character(id, name, type, isLocal, x, y, hp, speed, this.$arena);
     if (isLocal) {
       this.localCharacter = c;
     }else {
@@ -25,6 +26,7 @@ Game.prototype = {
     //Remove character object
     this.characters = this.characters.filter(function (c) {return c.id != characterId });
     //remove character from dom
+    console.log('remove id : '+characterId)
     $('#' + characterId).remove();
     $('#info-' + characterId).remove();
   },
@@ -42,6 +44,9 @@ Game.prototype = {
       $('#expl' + character.id).remove();
     }, 1000);
 
+    if(character.id == this.localCharacter.id){
+      $('#prompt').show();
+    }
   },
 
   mainLoop: function () {
@@ -52,6 +57,7 @@ Game.prototype = {
       //move local character
       this.localCharacter.move();
       this.localCharacter.anime();
+      //this.localCharacter.updateGame();
     }
   },
 
@@ -84,14 +90,14 @@ Game.prototype = {
         if (game.localCharacter !== undefined && serverCharacter.id == game.localCharacter.id) {
           game.localCharacter.hp = serverCharacter.hp;
           if (game.localCharacter.hp <= 0) {
-            game.killCharacter(clientCharacter);
+            game.killCharacter(game.localCharacter);
           }
         }
 
         //Update foreign characters
         var found = false;
         game.characters.forEach(function (clientCharacter) {
-          console.log('Id : ' + clientCharacter.id + ' x : ' + clientCharacter.x + ' y : ' + clientCharacter.y);
+          //console.log('Id : ' + clientCharacter.id + ' x : ' + clientCharacter.x + ' y : ' + clientCharacter.y);
           //update foreign tanks
           if (clientCharacter.id === serverCharacter.id) {
             clientCharacter.x = serverCharacter.x;

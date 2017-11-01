@@ -1,6 +1,6 @@
 var Ball = require('./ball.js');
-var WIDTH = 1100;
-var HEIGHT = 580;
+var WIDTH = 1280;
+var HEIGHT = 720;
 
 function Game() {
   this.characters = [];
@@ -17,7 +17,11 @@ Game.prototype = {
     addBall: function (ballData) {
       //console.log('add one ball : x : ' + ballData.x + ', y : ' + ballData.y);
 
-      this.increaseLastBallId();
+      this.lastBallId++;
+      if (this.lastBallId > 1000) {
+        this.lastBallId = 0;
+      }
+
       var ball = new Ball(this.lastBallId, ballData.ownerId, ballData.alpha, ballData.x, ballData.y );
       this.balls.push(ball);
     },
@@ -27,7 +31,7 @@ Game.prototype = {
         function (t) { return t.id != characterId; });
       },
 
-    //Sync tank with new data received from a client
+    //Sync character with new data received from a client
     syncCharacter: function (newCharacterData) {
       this.characters.forEach(function (character) {
         if (character.id == newCharacterData.id) {
@@ -53,7 +57,7 @@ Game.prototype = {
       });
     },
 
-    //Detect if ball collides with any tank
+    //Detect if ball collides with any character
     detectCollision: function (ball) {
         var self = this;
         this.characters.forEach(function (character) {
@@ -67,6 +71,26 @@ Game.prototype = {
             ball.exploding = true;
           }
         });
+
+        var obst1 = {x: 250, y: (HEIGHT) - 500, width: 150, height: 300};
+        var obst2 = {x: 880, y: (HEIGHT) - 500, width: 150, height: 300}
+        var collision = false;
+        if (obst1.x < ball.x  &&
+           obst1.x + obst1.width > ball.x &&
+           obst1.y < (HEIGHT - ball.y) &&
+           obst1.height + obst1.y > (HEIGHT - ball.y) ){
+             ball.out = true;
+             ball.exploding = true;
+        }
+        if (obst2.x < ball.x &&
+           obst2.x + obst2.width > ball.x &&
+           obst2.y < (HEIGHT - ball.y) &&
+           obst2.height + obst2.y > (HEIGHT - ball.y) ){
+             ball.out = true;
+             ball.exploding = true;
+        }
+
+
       },
 
     hurtCharacter: function (character) {
@@ -92,13 +116,6 @@ Game.prototype = {
       this.balls = this.balls.filter(function (ball) {
         return !ball.out;
       });
-    },
-
-    increaseLastBallId: function () {
-      this.lastBallId++;
-      if (this.lastBallId > 1000) {
-        this.lastBallId = 0;
-      }
     },
   };
 

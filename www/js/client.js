@@ -1,10 +1,14 @@
 var game = new Game();
 var selectedChar = 1;
-var charName = '';
+var characterName = '';
+var characterId = '';
 
 socket.on('addCharacter', function (character) {
   console.log('addCharacter : ' + character.name + ' id : ' + character.id + ' type : ' + character.type + ' isLocal : ' + character.isLocal);
-  game.addCharacter(character.id, character.name, character.type, character.isLocal, character.x, character.y, character.hp);
+  if(character.isLocal){
+    characterId = character.id;
+  }
+  game.addCharacter(character.id, character.name, character.type, character.isLocal, character.x, character.y, character.hp, character.speed);
 });
 
 socket.on('sync', function (gameServerData) {
@@ -32,7 +36,7 @@ $(document).ready(function () {
 });
 
 $(window).on('beforeunload', function () {
-  socket.emit('leaveGame', charName);
+  socket.emit('leaveGame', characterName, characterId);
 });
 
 function joinGame(charName, charType) {
