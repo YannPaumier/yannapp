@@ -2,7 +2,6 @@ module.exports = (app, io, game) => {
 
   var helpers = require('../game/helpers.js');
 
-
   var globalPlayerId = 0;
 
   io.on('connection', function (client) {
@@ -13,18 +12,18 @@ module.exports = (app, io, game) => {
       var playerId = globalPlayerId++;
 
       // Set de la position du joueur
-      if(helpers.isEven(playerId)){
+      if (helpers.isEven(playerId))  {
         var initX = helpers.getRandomInt(30, 230);
         var initY = helpers.getRandomInt(200, 500);
-      }else{
-        var initX = helpers.getRandomInt(1000, 1200);
+      }else {
+        var initX = helpers.getRandomInt(1020, 1220);
         var initY = helpers.getRandomInt(200, 500);
       }
 
       // Récupération des infos de la classe
       var infos = helpers.getCharacterInfos(character.type);
 
-      game.addCharacter( { id: playerId, name: character.name, type: character.type, hp: infos.stats.vitality } );
+      game.addCharacter({ id: playerId, name: character.name, type: character.type, hp: infos.stats.vitality });
 
       //console.log('player id : ' + playerId + ' initX: ' + initX + ' initY : ' + initY);
       client.emit('addCharacter', { id: playerId, name: character.name, type: character.type, isLocal: true, x: initX, y: initY, hp: infos.stats.vitality, speed: infos.stats.speed });
@@ -39,22 +38,22 @@ module.exports = (app, io, game) => {
       }
 
       //update ball positions
-      game.syncBalls();
+      game.syncSpells();
 
       //Broadcast data to clients
       client.emit('sync', game.getData());
       client.broadcast.emit('sync', game.getData());
 
-      //I do the cleanup after sending data, so the clients know
-      //when the tank dies and when the balls explode
+      //Cleanup after sending data, so the clients know
+      //when the character dies and when the balls explode
+      game.cleanDeadCharacters();
+      game.cleanDeadspells();
 
-      game.cleanDeadTanks();
-      game.cleanDeadBalls();
       //counter ++;
     });
 
-    client.on('shoot', function (ballData) {
-      game.addBall(ballData);
+    client.on('spell', function (spellData) {
+      game.addSpell(spellData);
     });
 
     client.on('leaveGame', function (characterName, characterId) {

@@ -37,11 +37,13 @@ function Character(id, name, type, isLocal, x, y, hp, speed, $arena) {
   };
   this.mx = null;
   this.my = null;
+
   this.spells = {
-    1: false,
-    2: false,
-    3: false,
-    4: false,
+    s1: 'aim',
+    s2: false,
+    s3: false,
+    s4: false,
+    s5: false,
     a: false,
     e: false,
     r: false,
@@ -72,19 +74,21 @@ Character.prototype = {
     this.$arena.append('<div id="info-' + this.id + '" class="info"></div>');
     this.$info = $('#info-' + this.id);
     this.$info.append('<div class="label">' + this.name + '</div>');
-    this.$info.append('<div class="hp-bar"></div>');
+    this.$info.append('<div class="hp-bar">' + this.hp + '</div>');
+    //this.$info.append('<div class="hp-bar progress-bar progress-bar-success" role="progressbar" aria-valuenow="' + this.hp + '" aria-valuemin="0" aria-valuemax="' + this.initHp + '">' + this.hp + '</div>');
 
     this.refresh();
+    this.setControls();
   },
 
   refresh: function () {
     this.$body.css('left', this.x - (this.w / 2) + 'px');
     this.$body.css('top', this.y - (this.h / 2)  + 'px');
 
-  	this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-  	this.$body.css('-moz-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-  	this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-  	this.$body.css('transform', 'rotateZ(' + this.characterAngle + 'deg)');
+    this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+    this.$body.css('-moz-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+    this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
+    this.$body.css('transform', 'rotateZ(' + this.characterAngle + 'deg)');
 
     this.$info.css('left', (this.x) + 'px');
     this.$info.css('top', (this.y) + 'px');
@@ -94,10 +98,65 @@ Character.prototype = {
 
   },
 
+  setControls: function () {
+    var t = this;
+
+    /* Detect both keypress and keyup to allow multiple keys
+    and combined directions */
+    $(document).keypress(function (e) {
+
+      var k = e.keyCode || e.which;
+
+      switch (k){
+        case 122: //Z
+          t.dir.up = true;
+        break;
+        case 100: //D
+          t.dir.right = true;
+        break;
+        case 115: //S
+          t.dir.down = true;
+        break;
+        case 113: //Q
+          t.dir.left = true;
+        break;
+        case 38://1
+        case 49: //1
+          t.spell(t.spells.s1);
+        break;
+      }
+
+    }).keyup(function (e) {
+      var k = e.keyCode || e.which;
+      switch (k){
+        case 90: //Z
+          t.dir.up = false;
+        break;
+        case 68: //D
+          t.dir.right = false;
+        break;
+        case 83: //S
+          t.dir.down = false;
+        break;
+        case 81: //Q
+          t.dir.left = false;
+        break;
+      }
+    }).mousemove(function (e) { //Detect mouse for aiming
+      t.mx = e.pageX - t.$arena.offset().left;
+      t.my = e.pageY - t.$arena.offset().top;
+      t.setCharacterAngle();
+    }).click(function () {
+      t.spell('shoot');
+    });
+
+  },
+
   move: function () {
     if (this.dead) {
       return;
     }
+
     var moveX = 0;
     var moveY = 0;
 
@@ -116,32 +175,35 @@ Character.prototype = {
     moveX = this.speed * moveX;
     moveY = this.speed * moveY;
 
-    // Detection collision
+    /*
+    * Detection des collisions
+    */
     var collisionX = false;
     var collisionY = false;
     var collision = false;
 
-    var obst1 = {x: 250, y: (this.$arena.height()) - 500, width: 150, height: 300};
-    var obst2 = {x: 880, y: (this.$arena.height()) - 500, width: 150, height: 300}
+    var obst1 = { x: 250, y: (this.$arena.height()) - 500, width: 150, height: 300 };
+    var obst2 = { x: 880, y: (this.$arena.height()) - 500, width: 150, height: 300 };
 
     if (obst1.x < this.x + 20 + moveX &&
        obst1.x + obst1.width > (this.x + moveX) - 20 &&
        obst1.y < (this.$arena.height()) - (this.y + moveY) + 20 &&
-       obst1.height + obst1.y > (this.$arena.height()) - (this.y + moveY) -20 ){
-        collision = true;
+       obst1.height + obst1.y > (this.$arena.height()) - (this.y + moveY) - 20) {
+      collision = true;
     }
+
     if (obst2.x < this.x + 20 + moveX &&
        obst2.x + obst2.width > (this.x + moveX) - 20 &&
        obst2.y < (this.$arena.height()) - (this.y + moveY) + 20 &&
-       obst2.height + obst2.y > (this.$arena.height()) - (this.y + moveY) -20 ){
-        collision = true;
+       obst2.height + obst2.y > (this.$arena.height()) - (this.y + moveY) - 20) {
+      collision = true;
     }
 
-    if ( !collision && this.x + moveX > (0 + ARENA_MARGIN) && (this.x + moveX) < (this.$arena.width() - ARENA_MARGIN)){
+    if (!collision && this.x + moveX > (0 + ARENA_MARGIN) && (this.x + moveX) < (this.$arena.width() - ARENA_MARGIN)) {
       this.x += moveX;
     }
 
-    if ( !collision && this.y + moveY > (0 + ARENA_MARGIN) && (this.y + moveY) < (this.$arena.height() - ARENA_MARGIN)){
+    if (!collision && this.y + moveY > (0 + ARENA_MARGIN) && (this.y + moveY) < (this.$arena.height() - ARENA_MARGIN)) {
       this.y += moveY;
     }
 
@@ -171,26 +233,29 @@ Character.prototype = {
     }
   },
 
-  shoot: function () {
+  spell: function (action) {
 
-  if(this.dead){
-    return;
-  }
+    if (this.dead) {
+      return;
+    }
 
-  //Emit ball to server
-  var serverBall = {};
-  //Just for local balls who have owner
-  serverBall.alpha = this.characterAngle * Math.PI / 180; //angle of shot in radians
-  //Set init position
-  var cannonLength = 20;
-  var deltaX = cannonLength * Math.sin(serverBall.alpha);
-  var deltaY = cannonLength * Math.cos(serverBall.alpha);
+    //Emit spell to server
+    var clientSpell = {};
 
-  serverBall.ownerId = this.id;
-  serverBall.x = this.x + deltaX - 5;
-  serverBall.y = this.y - deltaY - 5;
+    clientSpell.idSpell = action;
 
-  socket.emit('shoot', serverBall);
-},
+    //Just for local balls who have owner
+    clientSpell.alpha = this.characterAngle * Math.PI / 180; //angle of shot in radians
+    //Set init position
+    var cannonLength = 20;
+    var deltaX = cannonLength * Math.sin(clientSpell.alpha);
+    var deltaY = cannonLength * Math.cos(clientSpell.alpha);
+
+    clientSpell.ownerId = this.id;
+    clientSpell.x = this.x + deltaX - 5;
+    clientSpell.y = this.y - deltaY - 5;
+
+    socket.emit('spell', clientSpell);
+  },
 
 };

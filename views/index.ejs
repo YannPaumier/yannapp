@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <!-- Custom css -->
     <link href="/css/game.css" rel="stylesheet">
+    <link href="/css/spells.css" rel="stylesheet">
+    <link href="/css/characters.css" rel="stylesheet">
   </head>
 
 
@@ -60,6 +62,18 @@
 
       <div id="obstacle12" class="obstacle2">
       </div>
+
+      <!--
+      <div id="spells" class"spells">
+        <ul class="pagination">
+          <li><a href="#">1</a></li>
+          <li><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+          <li><a href="#">4</a></li>
+          <li><a href="#">5</a></li>
+        </ul>
+      </div>
+    -->
 	  </div>
 
   </body>
@@ -71,11 +85,11 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
     // Connection to socket
-      var socket = io.connect(<%- JSON.stringify(url) %>);
+    var socket = io.connect(<%- JSON.stringify(url) %>);
     </script>
     <script type="text/javascript" src="js/helpers.js"></script>
   	<script type="text/javascript" src="js/game.js"></script>
     <script type="text/javascript" src="js/character.js"></script>
-    <script type="text/javascript" src="js/weapon.js"></script>
+    <script type="text/javascript" src="js/spell.js"></script>
   	<script type="text/javascript" src="js/client.js"></script>
 </html>

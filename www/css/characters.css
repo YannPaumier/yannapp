@@ -1,0 +1,51 @@
+.character{
+	position: absolute;
+	background-repeat: no-repeat;
+/* background-position: -10px 0; */
+}
+/*
+.weapon{
+	position: absolute;
+	top: -25px;
+	width: 60px;
+	height: 80px;
+	background-image: url(../img/tank-cannon.png);
+	background-position: -10px 0;
+	-webkit-transform-origin: 30px 65px;
+	   -moz-transform-origin: 30px 65px;
+		 -o-transform-origin: 30px 65px;
+			transform-origin: 30px 65px;
+}
+*/
+.character1{
+	z-index: 1;
+	background-image: url(../sprites/character.png);
+	background-size: 80px 56px;
+}
+.character2{
+	z-index: 1;
+	background-image: url(../sprites/character.png);
+	background-size: 80px 56px;
+}
+.character3{
+	z-index: 1;
+	background-image: url(../sprites/character.png);
+	background-size: 80px 56px;
+}
+.character4{
+	z-index: 1;
+	background-image: url(../sprites/character.png);
+	background-size: 80px 56px;
+}
+.character5{
+	z-index: 1;
+	background-image: url(../sprites/character.png);
+	background-size: 80px 56px;
+}
+
+.explosion{
+	position: absolute;
+	width: 50px;
+	height: 50px;
+	z-index: 99;
+}

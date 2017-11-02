@@ -4,6 +4,10 @@ body{
 	font-family: "League-Gothic", Courier;
 	overflow: hidden;
 }
+
+/*
+* Arena part
+*/
 .arena{
 	margin: 10px auto;
 	width: 1280px;
@@ -43,60 +47,6 @@ body{
 	left: 880px;
 	top: 200px;
 }
-/*
-* Characters
-*/
-.character{
-	position: absolute;
-	background-repeat: no-repeat;
-/* background-position: -10px 0; */
-}
-/*
-.weapon{
-	position: absolute;
-	top: -25px;
-	width: 60px;
-	height: 80px;
-	background-image: url(../img/tank-cannon.png);
-	background-position: -10px 0;
-	-webkit-transform-origin: 30px 65px;
-	   -moz-transform-origin: 30px 65px;
-		 -o-transform-origin: 30px 65px;
-			transform-origin: 30px 65px;
-}
-*/
-.character1{
-	z-index: 1;
-	background-image: url(../sprites/character.png);
-	background-size: 80px 56px;
-}
-.character2{
-	z-index: 1;
-	background-image: url(../sprites/character.png);
-	background-size: 80px 56px;
-}
-.character3{
-	z-index: 1;
-	background-image: url(../sprites/character.png);
-	background-size: 80px 56px;
-}
-.character4{
-	z-index: 1;
-	background-image: url(../sprites/character.png);
-	background-size: 80px 56px;
-}
-.character5{
-	z-index: 1;
-	background-image: url(../sprites/character.png);
-	background-size: 80px 56px;
-}
-
-.explosion{
-	position: absolute;
-	width: 50px;
-	height: 50px;
-	z-index: 99;
-}
 
 /*
 * Info part
@@ -120,53 +70,13 @@ body{
 	display: inline-block;
 }
 .hp-bar{
-	width: 100px;
-	height: 4px;
+	font-size: 60%;
+	font-style: italic;
+	text-align: left;
+	width: 200px;
+	height: 12px;
 	background-color: #7DD12C;
 	margin: 0 auto;
-}
-
-/*
-* Weapons
-*/
-.cannon-ball{
-	position: absolute;
-	width: 8px;
-	height: 8px;
-	-webkit-border-radius: 5px;
-	   -moz-border-radius: 5px;
-		 -o-border-radius: 5px;
-			border-radius: 5px;
-	background-color: #2A2A2A;
-}
-.ball-explosion{
-	position: absolute;
-	display: inline-block;
-	background-color: #873B05;
-	width: 10px;
-	height: 10px;
-	opacity: 1;
-	-webkit-border-radius: 5px;
-	   -moz-border-radius: 5px;
-		 -o-border-radius: 5px;
-			border-radius: 5px;
-	-webkit-transition: all .3s ease-out;
-	   -moz-transition: all .3s ease-out;
-		 -o-transition: all .3s ease-out;
-			transition: all .3s ease-out;
-}
-
-.ball-explosion.expand{
-	width: 50px;
-	height: 50px;
-	background-color: #FCD700;
-	opacity: 0;
-	margin-left: -25px;
-	margin-top: -25px;
-	-webkit-border-radius: 25px;
-	    moz-border-radius: 25px;
-		 -o-border-radius: 25px;
-			border-radius: 25px;
 }
 
 /*

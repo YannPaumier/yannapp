@@ -17,60 +17,12 @@ Game.prototype = {
     var c = new Character(id, name, type, isLocal, x, y, hp, speed, this.$arena);
     if (isLocal) {
       this.localCharacter = c;
-      this.setControls();
+      //this.setControls();
     }else {
       this.characters.push(c);
     }
   },
 
-  setControls: function () {
-    var t = this.localCharacter;
-
-    /* Detect both keypress and keyup to allow multiple keys
-    and combined directions */
-    $(document).keypress(function (e) {
-
-      var k = e.keyCode || e.which;
-      switch (k){
-        case 122: //Z
-          t.dir.up = true;
-        break;
-        case 100: //D
-          t.dir.right = true;
-        break;
-        case 115: //S
-          t.dir.down = true;
-        break;
-        case 113: //Q
-          t.dir.left = true;
-        break;
-      }
-
-    }).keyup(function (e) {
-      var k = e.keyCode || e.which;
-      switch (k){
-        case 90: //Z
-          t.dir.up = false;
-        break;
-        case 68: //D
-          t.dir.right = false;
-        break;
-        case 83: //S
-          t.dir.down = false;
-        break;
-        case 81: //Q
-          t.dir.left = false;
-        break;
-      }
-    }).mousemove(function (e) { //Detect mouse for aiming
-      t.mx = e.pageX - t.$arena.offset().left;
-      t.my = e.pageY - t.$arena.offset().top;
-      t.setCharacterAngle();
-    }).click(function () {
-      t.shoot();
-    });
-
-  },
 
   removeCharacter: function (characterId) {
     //Remove character object
@@ -171,14 +123,14 @@ Game.prototype = {
       });
 
     //Render balls
-    game.$arena.find('.cannon-ball').remove();
+    game.$arena.find('*[class^="spell"]').remove();
 
-    serverData.balls.forEach(function (serverBall) {
-      //console.log('new ball : '+serverBall.y);
-      var b = new Weapon(serverBall.id, serverBall.ownerId, game.$arena, serverBall.x, serverBall.y);
-      b.exploding = serverBall.exploding;
-      if (b.exploding) {
-        b.explode();
+    serverData.spells.forEach(function (serverSpell) {
+      //console.log('new ball : '+serverSpell.y);
+      var s = new Spell(serverSpell.id, serverSpell.ownerId, game.$arena, serverSpell.x, serverSpell.y);
+      s.exploding = serverSpell.exploding;
+      if (s.exploding) {
+        s.explode();
       }
     });
   },

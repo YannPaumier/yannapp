@@ -1,38 +1,39 @@
-var Ball = require('./ball.js');
+var Spell = require('./spell.js');
+var spellsInfos = require('./config/spells.js');
 var WIDTH = 1280;
 var HEIGHT = 720;
 
 function Game() {
   this.characters = [];
-  this.balls = [];
-  this.lastBallId = 0;
+  this.spells = [];
+  this.lastSpellId = 0;
 }
 
 Game.prototype = {
 
-    addCharacter: function (character) {
-      this.characters.push(character);
+  addCharacter: function (character) {
+    this.characters.push(character);
+  },
+
+  addSpell: function (spellData) {
+    console.log('add one spell id : ' + spellData.idSpell + ' owner : ' + spellData.ownerId);
+
+    this.lastSpellId++;
+    if (this.lastSpellId > 1000) {
+      this.lastSpellId = 0;
+    }
+
+    var spell = new Spell(this.lastSpellId, this.idSpell, spellData.ownerId, spellData.alpha, spellData.x, spellData.y );
+    this.spells.push(spell);
+  },
+
+  removeCharacter: function (characterId) {
+      this.characters = this.characters.filter(
+      function (t) { return t.id != characterId; });
     },
 
-    addBall: function (ballData) {
-      //console.log('add one ball : x : ' + ballData.x + ', y : ' + ballData.y);
-
-      this.lastBallId++;
-      if (this.lastBallId > 1000) {
-        this.lastBallId = 0;
-      }
-
-      var ball = new Ball(this.lastBallId, ballData.ownerId, ballData.alpha, ballData.x, ballData.y );
-      this.balls.push(ball);
-    },
-
-    removeCharacter: function (characterId) {
-        this.characters = this.characters.filter(
-        function (t) { return t.id != characterId; });
-      },
-
-    //Sync character with new data received from a client
-    syncCharacter: function (newCharacterData) {
+  //Sync character with new data received from a client
+  syncCharacter: function (newCharacterData) {
       this.characters.forEach(function (character) {
         if (character.id == newCharacterData.id) {
           character.x = newCharacterData.x;
@@ -42,82 +43,84 @@ Game.prototype = {
       });
     },
 
-    //The app has absolute control of the balls and their movement
-    syncBalls: function () {
-      var self = this;
+  //The app has absolute control of the spells and their movement
+  syncSpells: function () {
+    var self = this;
 
-      //Detect when ball is out of bounds
-      this.balls.forEach(function (ball) {
-        self.detectCollision(ball);
-        if (ball.x < 0 || ball.x > WIDTH || ball.y < 0 || ball.y > HEIGHT) {
-          ball.out = true;
+      //Detect when spell is out of bounds
+      this.spells.forEach(function (spell) {
+        self.detectCollision(spell);
+        if (spell.x < 0 || spell.x > WIDTH || spell.y < 0 || spell.y > HEIGHT) {
+          spell.out = true;
         }else {
-          ball.fly();
+          spell.fly();
         }
       });
     },
 
-    //Detect if ball collides with any character
-    detectCollision: function (ball) {
-        var self = this;
-        this.characters.forEach(function (character) {
+  //Detect if spell collides with any character
+  detectCollision: function (spell) {
+    var self = this;
 
-          if (character.id != ball.ownerId
-          && Math.abs(character.x - ball.x) < 30
-          && Math.abs(character.y - ball.y) < 30) {
+    this.characters.forEach(function (character) {
+
+          if (character.id != spell.ownerId && Math.abs(character.x - spell.x) < 30 && Math.abs(character.y - spell.y) < 30) {
             //Hit character
-            self.hurtCharacter(character);
-            ball.out = true;
-            ball.exploding = true;
+            self.hurtCharacter(character, spell);
+            spell.out = true;
+            spell.exploding = true;
           }
         });
 
-        // Detect collisions with obstacles
-        var obst1 = {x: 250, y: (HEIGHT) - 500, width: 150, height: 300};
-        var obst2 = {x: 880, y: (HEIGHT) - 500, width: 150, height: 300}
-        var collision = false;
-        if (obst1.x < ball.x  &&
-           obst1.x + obst1.width > ball.x &&
-           obst1.y < (HEIGHT - ball.y) &&
-           obst1.height + obst1.y > (HEIGHT - ball.y) ){
-             ball.out = true;
-             ball.exploding = true;
-        }
-        if (obst2.x < ball.x &&
-           obst2.x + obst2.width > ball.x &&
-           obst2.y < (HEIGHT - ball.y) &&
-           obst2.height + obst2.y > (HEIGHT - ball.y) ){
-             ball.out = true;
-             ball.exploding = true;
-        }
+            // Detect collisions with obstacles
+            var obst1 = { x: 250, y: (HEIGHT) - 500, width: 150, height: 300 };
+            var obst2 = { x: 880, y: (HEIGHT) - 500, width: 150, height: 300 };
+            var collision = false;
+            if (obst1.x < spell.x  &&
+          obst1.x + obst1.width > spell.x &&
+          obst1.y < (HEIGHT - spell.y) &&
+          obst1.height + obst1.y > (HEIGHT - spell.y)) {
+              spell.out = true;
+              spell.exploding = true;
+            }
 
+            if (obst2.x < spell.x &&
+            obst2.x + obst2.width > spell.x &&
+            obst2.y < (HEIGHT - spell.y) &&
+            obst2.height + obst2.y > (HEIGHT - spell.y)) {
+              spell.out = true;
+              spell.exploding = true;
+            }
 
-      },
+          },
 
-    hurtCharacter: function (character) {
-        character.hp -= 20;
-      },
-
-    getData: function () {
-      var gameData = {};
-
-      gameData.characters = this.characters;
-      gameData.balls = this.balls;
-
-      return gameData;
+  hurtCharacter: function (character, spell) {
+      //console.log('hurt detected with : ' + spellsInfos[spell.idSpell].level1.damage);
+      var infosJson = JSON.parse(spellsInfos);
+      var infoSpell = infosJson[spell.idSpell];
+      character.hp -= infoSpell.level1.damage;
     },
 
-    cleanDeadTanks: function () {
-      this.characters = this.characters.filter(function (t) {
-        return t.hp > 0;
-      });
-    },
+  getData: function () {
+    var gameData = {};
 
-    cleanDeadBalls: function () {
-      this.balls = this.balls.filter(function (ball) {
-        return !ball.out;
-      });
-    },
-  };
+    gameData.characters = this.characters;
+    gameData.spells = this.spells;
+
+    return gameData;
+  },
+
+  cleanDeadCharacters: function () {
+    this.characters = this.characters.filter(function (t) {
+      return t.hp > 0;
+    });
+  },
+
+  cleanDeadspells: function () {
+    this.spells = this.spells.filter(function (spell) {
+      return !spell.out;
+    });
+  },
+};
 
 module.exports = Game;

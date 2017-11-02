@@ -1,9 +1,10 @@
 const BALL_SPEED = 15;
 
-function Ball(id, ownerId, alpha, x, y) {
+function Spell(id, idSpell, ownerId, alpha, x, y) {
   //console.log ('newBall : '+ownerId+ ' : ' + alpha + ' : ' + x + ' : ' +y );
 
   this.id = id;
+  this.idSpell = idSpell;
   this.ownerId = ownerId;
   this.alpha = alpha; //angle of shot in radians
   this.x = x;
@@ -12,7 +13,7 @@ function Ball(id, ownerId, alpha, x, y) {
 
 }
 
-Ball.prototype = {
+Spell.prototype = {
 
   fly: function () {
     //move to trayectory
@@ -22,6 +23,10 @@ Ball.prototype = {
     this.y += speedY;
   },
 
+  debuff: function (character) {
+
+  },
+
 };
 
-module.exports = Ball;
+module.exports = Spell;
