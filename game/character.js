@@ -26,7 +26,7 @@ Character.prototype = {
       this.x = helpers.getRandomInt(30, 230);
       this.y = helpers.getRandomInt(200, 500);
     }else {
-      this.x = helpers.getRandomInt(1020, 1220);
+      this.x = helpers.getRandomInt(1050, 1220);
       this.y = helpers.getRandomInt(200, 500);
     };
   },

@@ -1,18 +1,18 @@
 const ARENA_MARGIN = 30;
 
-function Character(characterData, $arena) {
+function Character(characterData, isLocal, $arena) {
   this.$arena = $arena;
 
   /*
   * Character infos
   */
-  this.id = characterData.character.id;
-  this.name = characterData.character.name;
-  this.type = characterData.character.type;
-  this.initHp = characterData.character.hp;
-  this.hp = characterData.character.hp;
-  this.isLocal = characterData.isLocal;
-  this.speed = characterData.character.speed / 10;
+  this.id = characterData.id;
+  this.name = characterData.name;
+  this.type = characterData.type;
+  this.initHp = characterData.hp;
+  this.hp = characterData.hp;
+  this.isLocal = isLocal;
+  this.speed = characterData.speed / 10;
   this.w = 80;
   this.h = 56;
 
@@ -22,8 +22,8 @@ function Character(characterData, $arena) {
   /*
   * Position
   */
-  this.x = characterData.character.x;
-  this.y = characterData.character.y;
+  this.x = characterData.x;
+  this.y = characterData.y;
   this.characterAngle = 0;
 
   /*
@@ -37,6 +37,8 @@ function Character(characterData, $arena) {
   };
   this.mx = null;
   this.my = null;
+
+  this.globalcd = false;
 
   this.spells = {
     s1: 'aim',
@@ -165,6 +167,9 @@ Character.prototype = {
       return;
     }
 
+    /*
+    * Gestion des déplaceemnts
+    */
     var moveX = 0;
     var moveY = 0;
 
@@ -180,8 +185,14 @@ Character.prototype = {
       moveX = 1;
     }
 
-    moveX = this.speed * moveX;
-    moveY = this.speed * moveY;
+    // Gestion des diagonales
+    if( moveX != 0 && moveY != 0 ) {
+      moveX =  Math.sin(45) * this.speed*moveX;
+      moveY =  Math.sin(45) * this.speed*moveY;
+    }else{
+      moveX = this.speed * moveX;
+      moveY = this.speed * moveY;
+    }
 
     /*
     * Detection des collisions
@@ -242,11 +253,12 @@ Character.prototype = {
   },
 
   spell: function (action) {
-
     if (this.dead) {
       return;
     }
-
+    if (this.globalcd){
+      return;
+    }
     //Emit spell to server
     var clientSpell = {};
 
@@ -264,6 +276,17 @@ Character.prototype = {
     clientSpell.y = this.y - deltaY - 5;
 
     socket.emit('spell', clientSpell);
+
+    var t = this;
+    t.globalcd = true;
+    t.$spell = $('.block');
+    t.$spell.css('background-color', '#B4B4B4');
+    setTimeout(function(){
+      //console.log('set globalcd to false');
+      t.$spell.css('background-color', '#D3D3D3');
+      t.globalcd = false;
+    }, 500);
+
   },
 
 };

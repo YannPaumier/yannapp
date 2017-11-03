@@ -13,9 +13,9 @@ function Game() {
 
 Game.prototype = {
 
-  addCharacter: function (characterData) {
-    var c = new Character(characterData, this.$arena);
-    if (characterData.isLocal) {
+  addCharacter: function (characterData, isLocal) {
+    var c = new Character(characterData, isLocal, this.$arena);
+    if (isLocal) {
       this.localCharacter = c;
 
       //this.setControls();
@@ -118,7 +118,7 @@ Game.prototype = {
         if (!found &&
         (game.localCharacter == undefined || serverCharacter.id != game.localCharacter.id)) {
           //I need to create it
-          game.addCharacter(serverCharacter.id, serverCharacter.name, serverCharacter.type, false, serverCharacter.x, serverCharacter.y, serverCharacter.hp);
+          game.addCharacter( serverCharacter, false);
         }
       });
 
