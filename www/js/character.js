@@ -1,18 +1,18 @@
 const ARENA_MARGIN = 30;
 
-function Character(id, name, type, isLocal, x, y, hp, speed, $arena) {
+function Character(characterData, $arena) {
   this.$arena = $arena;
 
   /*
   * Character infos
   */
-  this.id = id;
-  this.name = name;
-  this.type = type;
-  this.initHp = hp;
-  this.hp = hp;
-  this.isLocal = isLocal;
-  this.speed = speed / 10;
+  this.id = characterData.character.id;
+  this.name = characterData.character.name;
+  this.type = characterData.character.type;
+  this.initHp = characterData.character.hp;
+  this.hp = characterData.character.hp;
+  this.isLocal = characterData.isLocal;
+  this.speed = characterData.character.speed / 10;
   this.w = 80;
   this.h = 56;
 
@@ -22,8 +22,8 @@ function Character(id, name, type, isLocal, x, y, hp, speed, $arena) {
   /*
   * Position
   */
-  this.x = x;
-  this.y = y;
+  this.x = characterData.character.x;
+  this.y = characterData.character.y;
   this.characterAngle = 0;
 
   /*
@@ -78,7 +78,11 @@ Character.prototype = {
     //this.$info.append('<div class="hp-bar progress-bar progress-bar-success" role="progressbar" aria-valuenow="' + this.hp + '" aria-valuemin="0" aria-valuemax="' + this.initHp + '">' + this.hp + '</div>');
 
     this.refresh();
-    this.setControls();
+
+    if (this.isLocal) {
+      this.setControls();
+    };
+
   },
 
   refresh: function () {
@@ -122,7 +126,11 @@ Character.prototype = {
         break;
         case 38://1
         case 49: //1
-          t.spell(t.spells.s1);
+          t.spell('s1');
+        break;
+        case 233://2
+        case 50: //2
+          t.spell('s2');
         break;
       }
 

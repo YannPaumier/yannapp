@@ -1,5 +1,7 @@
 var Spell = require('./spell.js');
+var Character = require('./character.js');
 var spellsInfos = require('./config/spells.js');
+
 var WIDTH = 1280;
 var HEIGHT = 720;
 
@@ -7,12 +9,23 @@ function Game() {
   this.characters = [];
   this.spells = [];
   this.lastSpellId = 0;
+  this.lastPlayerId = 0;
 }
 
 Game.prototype = {
 
-  addCharacter: function (character) {
+  addCharacter: function (characterData) {
+    console.log('new character');
+
+    this.lastPlayerId++;
+
+    if (this.lastPlayerId > 1000) {
+      this.lastPlayerId = 0;
+    }
+
+    var character = new Character(this.lastPlayerId, characterData.type, characterData.name);
     this.characters.push(character);
+    return character;
   },
 
   addSpell: function (spellData) {
@@ -23,7 +36,7 @@ Game.prototype = {
       this.lastSpellId = 0;
     }
 
-    var spell = new Spell(this.lastSpellId, this.idSpell, spellData.ownerId, spellData.alpha, spellData.x, spellData.y );
+    var spell = new Spell(this.lastSpellId, spellData.idSpell, spellData.ownerId, spellData.alpha, spellData.x, spellData.y );
     this.spells.push(spell);
   },
 
@@ -62,7 +75,7 @@ Game.prototype = {
   detectCollision: function (spell) {
     var self = this;
 
-    this.characters.forEach(function (character) {
+      this.characters.forEach(function (character) {
 
           if (character.id != spell.ownerId && Math.abs(character.x - spell.x) < 30 && Math.abs(character.y - spell.y) < 30) {
             //Hit character
@@ -95,10 +108,11 @@ Game.prototype = {
           },
 
   hurtCharacter: function (character, spell) {
-      //console.log('hurt detected with : ' + spellsInfos[spell.idSpell].level1.damage);
-      var infosJson = JSON.parse(spellsInfos);
-      var infoSpell = infosJson[spell.idSpell];
-      character.hp -= infoSpell.level1.damage;
+      var idSpell = spell.idSpell;
+      var spellInfo = spellsInfos[idSpell];
+      character = spellInfo['level1'].debuff(character);
+
+    //  character.hp -= damage;
     },
 
   getData: function () {

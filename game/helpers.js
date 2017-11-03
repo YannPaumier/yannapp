@@ -1,30 +1,26 @@
-var hunter = require('./characters/hunter.js');
-var assassin = require('./characters/assassin.js');
-var mage = require('./characters/mage.js');
-var paladin = require('./characters/paladin.js');
-var warrior = require('./characters/warrior.js');
+var characters = require('./config/characters.js');
 
-exports.getCharacterInfos = function (type){
-  switch(type) {
+exports.getCharacterInfos = function (type) {
+  switch (type) {
     case 1:
-        return hunter;
+        return characters[1];
         break;
     case 2:
-        return warrior;
+        return characters[2];
         break;
     case 3:
-        return mage;
+        return characters[3];
         break;
     case 4:
-        return assassin;
+        return characters[4];
         break;
     case 5:
-        return paladin;
+        return characters[5];
         break;
     default:
         return 0;
-}
-}
+      }
+};
 
 exports.getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -36,4 +32,4 @@ exports.isEven = function(n) {
   }else{
     return false;
   }
-}
+};

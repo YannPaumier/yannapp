@@ -13,16 +13,16 @@ function Game() {
 
 Game.prototype = {
 
-  addCharacter: function (id, name, type, isLocal, x, y, hp, speed) {
-    var c = new Character(id, name, type, isLocal, x, y, hp, speed, this.$arena);
-    if (isLocal) {
+  addCharacter: function (characterData) {
+    var c = new Character(characterData, this.$arena);
+    if (characterData.isLocal) {
       this.localCharacter = c;
+
       //this.setControls();
     }else {
       this.characters.push(c);
     }
   },
-
 
   removeCharacter: function (characterId) {
     //Remove character object
@@ -123,11 +123,11 @@ Game.prototype = {
       });
 
     //Render balls
-    game.$arena.find('*[class^="spell"]').remove();
+    game.$arena.find('*[class^="spell-"]').remove();
 
     serverData.spells.forEach(function (serverSpell) {
       //console.log('new ball : '+serverSpell.y);
-      var s = new Spell(serverSpell.id, serverSpell.ownerId, game.$arena, serverSpell.x, serverSpell.y);
+      var s = new Spell(serverSpell.id, serverSpell.idSpell, serverSpell.ownerId, game.$arena, serverSpell.x, serverSpell.y);
       s.exploding = serverSpell.exploding;
       if (s.exploding) {
         s.explode();

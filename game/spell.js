@@ -1,4 +1,4 @@
-const BALL_SPEED = 15;
+var spellsInfos = require('./config/spells.js');
 
 function Spell(id, idSpell, ownerId, alpha, x, y) {
   //console.log ('newBall : '+ownerId+ ' : ' + alpha + ' : ' + x + ' : ' +y );
@@ -16,15 +16,14 @@ function Spell(id, idSpell, ownerId, alpha, x, y) {
 Spell.prototype = {
 
   fly: function () {
-    //move to trayectory
-    var speedX = BALL_SPEED * Math.sin(this.alpha);
-    var speedY = -BALL_SPEED * Math.cos(this.alpha);
+    //move to trajectory
+    var spellInfo = spellsInfos[this.idSpell];
+    var speed = spellInfo['level1'].speed;
+
+    var speedX = speed * Math.sin(this.alpha);
+    var speedY = -speed * Math.cos(this.alpha);
     this.x += speedX;
     this.y += speedY;
-  },
-
-  debuff: function (character) {
-
   },
 
 };

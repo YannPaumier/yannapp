@@ -3,12 +3,14 @@ var selectedChar = 1;
 var characterName = '';
 var characterId = '';
 
-socket.on('addCharacter', function (character) {
-  console.log('addCharacter : ' + character.name + ' id : ' + character.id + ' type : ' + character.type + ' isLocal : ' + character.isLocal);
-  if(character.isLocal){
-    characterId = character.id;
-  }
-  game.addCharacter(character.id, character.name, character.type, character.isLocal, character.x, character.y, character.hp, character.speed);
+socket.on('addCharacter', function (characterData) {
+  console.log('New player : ' + characterData.character.name);
+  if (characterData.isLocal) {
+    characterId = characterData.character.id;
+    characterName = characterData.character.name;
+  };
+
+  game.addCharacter(characterData);
 });
 
 socket.on('sync', function (gameServerData) {
