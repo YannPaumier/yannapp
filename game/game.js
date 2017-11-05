@@ -62,14 +62,13 @@ Game.prototype = {
   syncSpells: function () {
     var self = this;
 
-
-
-      // Detect cibled or self spell
       this.spells.forEach(function (spell) {
+        /*
+          // Detect cibled or self spell
         if(spellInfo[spell.idSpell].isSelf || spellInfo[spell.idSpell].isCibled){
         //  spellInfo['level1'].buff
         };
-
+        */
         // Detect collision
         self.detectCollision(spell);
         //Detect when spell is out of bounds
