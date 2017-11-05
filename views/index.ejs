@@ -19,7 +19,7 @@
 
 
   <body>
-
+    <div class="perspective">
     <div id="prompt" class="name-prompt">
       <div class="retro-arena">GROS ARENA</div>
 	    <div class="char-select col-md-12">
@@ -27,23 +27,23 @@
 	      	<ul class="char-selection">
 	      		<li class="selected" data-char="1">
               <div class="class-name">Hunter</div>
-	      			<img width="60" src="sprites/character.png">
+	      			<img width="100" src="sprites/1-front-stand-armed.png">
 	      		</li>
 	      		<li data-char="2">
               <div class="class-name">Warrior</div>
-	      			<img width="60" src="sprites/character.png">
+	      			<img width="100" src="sprites/2-front-stand-armed.png">
 	      		</li>
 	      		<li data-char="3">
-              <div class="class-name">Mage</div>
-	      			<img width="60" src="sprites/character.png">
+              <div class="class-name">Mentalist</div>
+	      			<img width="100" src="sprites/3-front-stand-armed.png">
 	      		</li>
             <li data-char="4">
               <div class="class-name">Assassin</div>
-	      			<img width="60" src="sprites/character.png">
+	      			<i>Soon</i>
 	      		</li>
             <li data-char="5">
               <div class="class-name">Paladin</div>
-	      			<img width="60" src="sprites/character.png">
+	      			<i>Soon</i>
 	      		</li>
 	      	</ul>
     	</div>
@@ -57,22 +57,26 @@
 
     <div id="arena" class="arena">
 
-      <div id="obstacle1" class="obstacle1">
+      <div id="obstacle1-top" class="obstacle1-top">
       </div>
-
-      <div id="obstacle12" class="obstacle2">
+      <div id="obstacle1-down" class="obstacle1-down">
+      </div>
+      <div id="obstacle2-top" class="obstacle2-top">
+      </div>
+      <div id="obstacle2-down" class="obstacle2-down">
       </div>
 
       <div id="" class="spells-bar">
-        <div id="block-lc" class="block">LC</div>
-        <div id="block-1" class="block">1</div>
-        <div id="block-2" class="block">2</div>
-        <div id="block-3" class="block">3</div>
-        <div id="block-4" class="block">4</div>
+        <div id="block-0" class="block"><div class="keyblock">lc</div></div>
+        <div id="block-1" class="block"><div class="keyblock">1</div></div>
+        <div id="block-2" class="block"><div class="keyblock">2</div></div>
+        <div id="block-3" class="block"><div class="keyblock">3</div></div>
+        <div id="block-4" class="block"><div class="keyblock">4</div></div>
       </div>
 
 	  </div>
 
+  </body>
   </body>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

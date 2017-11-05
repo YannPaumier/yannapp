@@ -1,10 +1,13 @@
-var infos = require('./config/characters.js');
 var helpers = require('../game/helpers.js');
+var spellsInfos = require('./config/spells.js');
 
 function Character(id, type, name) {
   this.id = id;
   this.name = name;
   this.type = type;
+
+  this.spells = {};
+  this.buffDebuff = null;
 
   this.setStats();
   this.initPosition();
@@ -18,6 +21,28 @@ Character.prototype = {
 
     this.hp = infos.vitality;
     this.speed = infos.speed;
+
+
+    // Récupération des spells du character
+    var characterSpells = infos.spells;
+
+    var t = this;
+    var count = 0;
+    characterSpells.forEach(function(value){
+      if( spellsInfos[value] != undefined ){
+        var spellInfo = spellsInfos[value];
+        //console.log('value : ' + value);
+        //console.log('name : ' + spellInfo.name);
+        //console.log('cooldown : ' + spellInfo.level1.cooldown);
+        var spellKey = count;
+        if (count == 0)
+          spellKey = 'lc';
+
+        t.spells[count] = {id: value, name: spellInfo.name, cooldown: spellInfo.level1.cooldown, isAttack: spellInfo.isAttack, isSpell: spellInfo.isSpell, spellKey: spellKey};
+        count++;
+      }
+    });
+
   },
 
   initPosition: function () {

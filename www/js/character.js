@@ -12,12 +12,14 @@ function Character(characterData, isLocal, $arena) {
   this.initHp = characterData.hp;
   this.hp = characterData.hp;
   this.isLocal = isLocal;
-  this.speed = characterData.speed / 10;
-  this.w = 80;
-  this.h = 56;
+  this.speed = characterData.speed;
+  this.w = 100;
+  this.h = 100;
 
   this.dead = false;
   this.isMoving = false;
+  this.isAttacking = false;
+  this.isSpelling = false;
 
   /*
   * Position
@@ -38,14 +40,19 @@ function Character(characterData, isLocal, $arena) {
   this.mx = null;
   this.my = null;
 
-  this.globalcd = false;
+  /*
+  * spells
+  */
+  this.spells = characterData.spells;
 
-  this.spells = {
-    s1: 'aim',
-    s2: false,
-    s3: false,
-    s4: false,
-    s5: false,
+  this.globalcd = false;
+  this.cds = {
+    0: false,
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+    5: false,
     a: false,
     e: false,
     r: false,
@@ -67,10 +74,12 @@ Character.prototype = {
     this.$body.css('height', this.h);
 
     // Set de sa position
+    /*
     this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
     this.$body.css('-moz-transform', 'rotateZ(' + this.characterAngle + 'deg)');
     this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
     this.$body.css('transform', 'rotateZ(' + this.characterAngle + 'deg)');
+    */
 
     // Ajout des infos du character
     this.$arena.append('<div id="info-' + this.id + '" class="info"></div>');
@@ -91,17 +100,20 @@ Character.prototype = {
     this.$body.css('left', this.x - (this.w / 2) + 'px');
     this.$body.css('top', this.y - (this.h / 2)  + 'px');
 
+    this.anime();
+    /*
     this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
     this.$body.css('-moz-transform', 'rotateZ(' + this.characterAngle + 'deg)');
     this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
     this.$body.css('transform', 'rotateZ(' + this.characterAngle + 'deg)');
+    */
 
     this.$info.css('left', (this.x) + 'px');
     this.$info.css('top', (this.y) + 'px');
 
     this.$info.find('.hp-bar').css('width', (this.hp * 100) / this.initHp + 'px');
-    this.$info.find('.hp-bar').css('background-color', getGreenToRed(this.hp * 100) / this.initHp);
-
+    this.$info.find('.hp-bar').css('background-color', getGreenToRed( (this.hp * 100) / this.initHp));
+    this.$info.find('.hp-bar').text(this.hp);
   },
 
   setControls: function () {
@@ -128,11 +140,31 @@ Character.prototype = {
         break;
         case 38://1
         case 49: //1
-          t.spell('s1');
+          t.spell('1');
         break;
         case 233://2
         case 50: //2
-          t.spell('s2');
+          t.spell('2');
+        break;
+        case 34://3
+        case 51: //3
+          t.spell('3');
+        break;
+        case 39://4
+        case 52: //4
+          t.spell('4');
+        break;
+        case 40: //5
+        case 53: //5
+          t.spell('5');
+        break;
+        case 70: //r
+        case 102: //r
+          t.spell('6');
+        break;
+        case 114://f
+        case 82: //f
+          t.spell('7');
         break;
       }
 
@@ -157,7 +189,7 @@ Character.prototype = {
       t.my = e.pageY - t.$arena.offset().top;
       t.setCharacterAngle();
     }).click(function () {
-      t.spell('shoot');
+      t.spell('0');
     });
 
   },
@@ -170,6 +202,13 @@ Character.prototype = {
     /*
     * Gestion des déplaceemnts
     */
+    // Indique si le joueur est en déplacement
+    if (this.dir.up || this.dir.down || this.dir.left || this.dir.right){
+      this.isMoving = true;
+    }else{
+      this.isMoving = false;
+    }
+
     var moveX = 0;
     var moveY = 0;
 
@@ -201,20 +240,20 @@ Character.prototype = {
     var collisionY = false;
     var collision = false;
 
-    var obst1 = { x: 250, y: (this.$arena.height()) - 500, width: 150, height: 300 };
-    var obst2 = { x: 880, y: (this.$arena.height()) - 500, width: 150, height: 300 };
+    var obst1 = { x: 240, y: (this.$arena.height()) - 459, width: 216, height: 259 };
+    var obst2 = { x: 800, y: (this.$arena.height()) - 459, width: 216, height: 259 };
 
-    if (obst1.x < this.x + 20 + moveX &&
-       obst1.x + obst1.width > (this.x + moveX) - 20 &&
-       obst1.y < (this.$arena.height()) - (this.y + moveY) + 20 &&
-       obst1.height + obst1.y > (this.$arena.height()) - (this.y + moveY) - 20) {
+    if (obst1.x < this.x + 10 + moveX &&
+       obst1.x + obst1.width > (this.x + moveX) - 10 &&
+       obst1.y < (this.$arena.height()) - (this.y + moveY)  - 20 &&
+       obst1.height + obst1.y > (this.$arena.height()) - (this.y + moveY) +20 ) {
       collision = true;
     }
 
-    if (obst2.x < this.x + 20 + moveX &&
-       obst2.x + obst2.width > (this.x + moveX) - 20 &&
-       obst2.y < (this.$arena.height()) - (this.y + moveY) + 20 &&
-       obst2.height + obst2.y > (this.$arena.height()) - (this.y + moveY) - 20) {
+    if (obst2.x < this.x + 10 + moveX &&
+       obst2.x + obst2.width > (this.x + moveX) - 10 &&
+       obst2.y < (this.$arena.height()) - (this.y + moveY) - 20 &&
+       obst2.height + obst2.y > (this.$arena.height()) - (this.y + moveY) + 20) {
       collision = true;
     }
 
@@ -241,28 +280,66 @@ Character.prototype = {
   },
 
   anime: function () {
+
     char = this;
-    if (char.dir.up || char.dir.down || char.dir.left || char.dir.right)
-    {
-      char.isMoving = true;
-      char.$body.css('background-image', 'url(../sprites/character.png');
-    }else {
-      char.isMoving = false;
-      char.$body.css('background-image', 'url(../sprites/character.png');
-    }
+    //char.$body.css('background-image', '');
+      if( -45 <= char.characterAngle && char.characterAngle <= 45){
+        if (this.isMoving)
+        char.$body.css('background-image', 'url(../sprites/'+this.type+'-back-walk.gif');
+        if (this.isAttacking)
+        char.$body.css('background-image', 'url(../sprites/'+this.type+'-back-attack.gif');
+        if( !this.isMoving && !this.isAttacking && !this.isSpelling)
+        char.$body.css('background-image', 'url(../sprites/'+this.type+'-back-stand.png');
+      }
+      else if( 45 <= char.characterAngle && char.characterAngle <= 135){
+        if (this.isMoving)
+        char.$body.css('background-image', 'url(../sprites/'+this.type+'-right-walk.gif');
+        if (this.isAttacking)
+        char.$body.css('background-image', 'url(../sprites/'+this.type+'-right-attack.gif');
+        if( !this.isMoving && !this.isAttacking && !this.isSpelling)
+          char.$body.css('background-image', 'url(../sprites/'+this.type+'-right-stand.png');
+      }
+      else if( 135 <= char.characterAngle && char.characterAngle <= 225){
+        if (this.isMoving)
+        char.$body.css('background-image', 'url(../sprites/'+this.type+'-front-walk.gif');
+        if (this.isAttacking)
+        char.$body.css('background-image', 'url(../sprites/'+this.type+'-front-attack.gif');
+        if( !this.isMoving && !this.isAttacking && !this.isSpelling)
+        char.$body.css('background-image', 'url(../sprites/'+this.type+'-front-stand.png');
+      }
+      else if( 225 <= char.characterAngle && char.characterAngle <= 270 || -90 <= char.characterAngle && char.characterAngle <= -45){
+        if (this.isMoving)
+        char.$body.css('background-image', 'url(../sprites/'+this.type+'-left-walk.gif');
+        if (this.isAttacking)
+        char.$body.css('background-image', 'url(../sprites/'+this.type+'-left-attack.gif');
+        if( !this.isMoving && !this.isAttacking && !this.isSpelling)
+        char.$body.css('background-image', 'url(../sprites/'+this.type+'-left-stand.png');
+      }
+
   },
 
   spell: function (action) {
     if (this.dead) {
       return;
     }
-    if (this.globalcd){
+    if (this.globalcd || this.cds[action]){
       return;
     }
+
+    var b = this;
+
+    // Set du mouvement pour animation
+    if(this.spells[action].isAttack){
+      b.isAttacking = true;
+      setTimeout(function(){
+          b.isAttacking = false;
+      }, 1800);
+    }
+
     //Emit spell to server
     var clientSpell = {};
 
-    clientSpell.idSpell = action;
+    clientSpell.idSpell = this.spells[action].id;
 
     //Just for local balls who have owner
     clientSpell.alpha = this.characterAngle * Math.PI / 180; //angle of shot in radians
@@ -277,16 +354,72 @@ Character.prototype = {
 
     socket.emit('spell', clientSpell);
 
+    this.cooldown(action);
+  },
+
+  cooldown: function (action){
     var t = this;
+    //console.log('set du cooldown du spell : ' + spellId + ' cooldwon : '+ t.spells[spellId].cooldown);
+
     t.globalcd = true;
-    t.$spell = $('.block');
-    t.$spell.css('background-color', '#B4B4B4');
+    t.cds[action]=true;
+
     setTimeout(function(){
-      //console.log('set globalcd to false');
-      t.$spell.css('background-color', '#D3D3D3');
+      //console.log('set globalcd to false');&
       t.globalcd = false;
     }, 500);
 
+    // Change la couleur du spell en CD
+    var spellBlock = $('#block-'+action);
+    spellBlock.css('background-color', '#FFE5E5');
+    setTimeout(function(){
+      //console.log('set du spell ' + action +  ' to false');
+      spellBlock.css('background-color', '#D3D3D3');
+      t.cds[action]=false;
+    }, t.spells[action].cooldown*1000);
+
+  },
+
+  buffDebuff: function( newData ){
+
+      var initX = this.x;
+      var initY = this.y;
+      var initAngle = this.angle;
+      var initSpeed = this.speed;
+      //console.log('BUFFDEBBUFF with x : ' + newData.newX + ' et y : ' + newData.newY);
+      //console.log('this x : ' + this.x + ' this y : '+ this.y );
+      this.x= newData.newX;
+      this.y = newData.newY;
+      /*
+      if( (newData.newX && newData.newY) != null ){
+        while (this.x != newData.newX && this.y != newData.newY){
+          console.log('DEPLACEMENT');
+          if( newData.newX < this.x){
+            this.x -= 1;
+          }else{
+            this.x += 1;
+          }
+          if( newData.newY < this.y){
+            this.y -= 1;
+          }else{
+            this.y += 1;
+          }
+        }
+      }*/
+
+      if(newData.timeout > 0 ){
+        //console.log('RESET DE LA POSITION)')
+        setTimeout(function(){
+          if(newData.newX != null)
+          this.x = initX;
+          if(newData.newY != null)
+          this.y = initY;
+          if(newData.newAngle != null)
+          this.angle = initAngle;
+          if(newData.newSpeed != null)
+          this.speed = initSpeed;
+        }, newData.timeout);
+      }
   },
 
 };

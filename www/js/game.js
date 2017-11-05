@@ -1,4 +1,4 @@
-var INTERVAL = 50;
+var INTERVAL = 20;
 
 function Game() {
   //this.localCharacter = '';
@@ -18,9 +18,21 @@ Game.prototype = {
     if (isLocal) {
       this.localCharacter = c;
 
+      this.setLayout(characterData);
       //this.setControls();
     }else {
       this.characters.push(c);
+    }
+  },
+
+  setLayout: function(characterData){
+
+    // Set spells layout
+    for (var property in characterData.spells) {
+      if (characterData.spells.hasOwnProperty(property)) {
+          // console.log('name : ' + characterData.spells[property].name);
+          $('#block-'+property).append(characterData.spells[property].name);
+      }
     }
   },
 
@@ -58,7 +70,6 @@ Game.prototype = {
 
       //move local character
       this.localCharacter.move();
-      this.localCharacter.anime();
       //this.localCharacter.updateGame();
     }
   },
@@ -73,6 +84,7 @@ Game.prototype = {
       x: this.localCharacter.x,
       y: this.localCharacter.y,
       characterAngle: this.localCharacter.characterAngle,
+      isMoving: this.localCharacter.isMoving,
     };
     gameData.character = c;
 
@@ -83,7 +95,7 @@ Game.prototype = {
 
   receiveData: function (serverData) {
     var game = this;
-    console.log('receive data from server : ');
+    //console.log('receive data from server : ');
 
     // Render characters
     serverData.characters.forEach(function (serverCharacter) {
@@ -91,6 +103,13 @@ Game.prototype = {
         //Update local character stats
         if (game.localCharacter !== undefined && serverCharacter.id == game.localCharacter.id) {
           game.localCharacter.hp = serverCharacter.hp;
+          game.localCharacter.speed = serverCharacter.speed;
+
+          if( serverCharacter.buffDebuff != null ){
+            console.log( ' lobject ' + serverCharacter.buffDebuff.newX);
+            game.localCharacter.buffDebuff(serverCharacter.buffDebuff);
+          }
+
           if (game.localCharacter.hp <= 0) {
             game.killCharacter(game.localCharacter);
           }
@@ -104,6 +123,7 @@ Game.prototype = {
           if (clientCharacter.id === serverCharacter.id) {
             clientCharacter.x = serverCharacter.x;
             clientCharacter.y = serverCharacter.y;
+            clientCharacter.isMoving = serverCharacter.isMoving;
             clientCharacter.characterAngle = serverCharacter.characterAngle;
             clientCharacter.hp = serverCharacter.hp;
             if (clientCharacter.hp <= 0) {
@@ -122,7 +142,7 @@ Game.prototype = {
         }
       });
 
-    //Render balls
+    //Render spells
     game.$arena.find('*[class^="spell-"]').remove();
 
     serverData.spells.forEach(function (serverSpell) {

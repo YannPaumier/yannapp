@@ -19,13 +19,12 @@
 */
 .character1{
 	z-index: 1;
-	background-image: url(../sprites/character.png);
-	background-size: 80px 56px;
+	background-size: 100px 100px;
 }
 .character2{
 	z-index: 1;
 	background-image: url(../sprites/character.png);
-	background-size: 80px 56px;
+	background-size: 100px 100px;
 }
 .character3{
 	z-index: 1;

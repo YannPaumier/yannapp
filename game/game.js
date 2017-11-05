@@ -29,7 +29,7 @@ Game.prototype = {
   },
 
   addSpell: function (spellData) {
-    console.log('add one spell id : ' + spellData.idSpell + ' owner : ' + spellData.ownerId);
+    //console.log('add one spell id : ' + spellData.idSpell + ' owner : ' + spellData.ownerId);
 
     this.lastSpellId++;
     if (this.lastSpellId > 1000) {
@@ -37,6 +37,7 @@ Game.prototype = {
     }
 
     var spell = new Spell(this.lastSpellId, spellData.idSpell, spellData.ownerId, spellData.alpha, spellData.x, spellData.y );
+
     this.spells.push(spell);
   },
 
@@ -51,6 +52,7 @@ Game.prototype = {
         if (character.id == newCharacterData.id) {
           character.x = newCharacterData.x;
           character.y = newCharacterData.y;
+          character.isMoving = newCharacterData.isMoving;
           character.characterAngle = newCharacterData.characterAngle;
         }
       });
@@ -60,9 +62,17 @@ Game.prototype = {
   syncSpells: function () {
     var self = this;
 
-      //Detect when spell is out of bounds
+
+
+      // Detect cibled or self spell
       this.spells.forEach(function (spell) {
+        if(spellInfo[spell.idSpell].isSelf || spellInfo[spell.idSpell].isCibled){
+        //  spellInfo['level1'].buff
+        };
+
+        // Detect collision
         self.detectCollision(spell);
+        //Detect when spell is out of bounds
         if (spell.x < 0 || spell.x > WIDTH || spell.y < 0 || spell.y > HEIGHT) {
           spell.out = true;
         }else {
@@ -86,21 +96,21 @@ Game.prototype = {
         });
 
             // Detect collisions with obstacles
-            var obst1 = { x: 250, y: (HEIGHT) - 500, width: 150, height: 300 };
-            var obst2 = { x: 880, y: (HEIGHT) - 500, width: 150, height: 300 };
+            var obst1 = { x: 240, y: (HEIGHT) - 459, width: 216, height: 259 };
+            var obst2 = { x: 800, y: (HEIGHT) - 459, width: 216, height: 259 };
             var collision = false;
-            if (obst1.x < spell.x  &&
-          obst1.x + obst1.width > spell.x &&
-          obst1.y < (HEIGHT - spell.y) &&
-          obst1.height + obst1.y > (HEIGHT - spell.y)) {
+            if (obst1.x < spell.x - 20 &&
+          obst1.x + obst1.width > spell.x + 20 &&
+          obst1.y < (HEIGHT - spell.y) - 40 &&
+          obst1.height + obst1.y > (HEIGHT - spell.y) + 40 ) {
               spell.out = true;
               spell.exploding = true;
             }
 
-            if (obst2.x < spell.x &&
-            obst2.x + obst2.width > spell.x &&
-            obst2.y < (HEIGHT - spell.y) &&
-            obst2.height + obst2.y > (HEIGHT - spell.y)) {
+            if (obst2.x < spell.x - 20 &&
+            obst2.x + obst2.width > spell.x + 20 &&
+            obst2.y < (HEIGHT - spell.y) - 40 &&
+            obst2.height + obst2.y > (HEIGHT - spell.y) + 40 ) {
               spell.out = true;
               spell.exploding = true;
             }
@@ -110,7 +120,8 @@ Game.prototype = {
   hurtCharacter: function (character, spell) {
       var idSpell = spell.idSpell;
       var spellInfo = spellsInfos[idSpell];
-      character = spellInfo['level1'].debuff(character);
+      spellInfo['level1'].debuff(character, spell);
+      //console.log('new X : ' +character.buffDebuff.newX);
 
     //  character.hp -= damage;
     },
@@ -124,13 +135,19 @@ Game.prototype = {
     return gameData;
   },
 
-  cleanDeadCharacters: function () {
+  cleanCharacters: function () {
+    // Remove debuff
+    this.characters.forEach(function(c){
+      c.buffDebuff = null;
+    });
+
+    // Remove dead characters
     this.characters = this.characters.filter(function (t) {
       return t.hp > 0;
     });
   },
 
-  cleanDeadspells: function () {
+  cleanSpells: function () {
     this.spells = this.spells.filter(function (spell) {
       return !spell.out;
     });

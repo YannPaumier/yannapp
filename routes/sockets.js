@@ -27,8 +27,8 @@ module.exports = (app, io, game) => {
 
       //Cleanup after sending data, so the clients know
       //when the character dies and when the balls explode
-      game.cleanDeadCharacters();
-      game.cleanDeadspells();
+      game.cleanCharacters();
+      game.cleanSpells();
 
       //counter ++;
     });

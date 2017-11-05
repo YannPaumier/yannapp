@@ -24,7 +24,7 @@ materialize: function(){
 },
 
 explode: function(){
-	this.$arena.append('<div id="expl' + this.id + '" class="spell-cannon-' + this.idSpell + '" style="left:' + this.x + 'px"></div>');
+	this.$arena.append('<div id="expl' + this.id + '" class="spell-' + this.idSpell + '-explosion" style="left:' + this.x + 'px"></div>');
 	var $expl = $('#expl' + this.id);
 	$expl.css('left', this.x + 'px');
 	$expl.css('top', this.y + 'px');
@@ -32,7 +32,7 @@ explode: function(){
 		$expl.addClass('expand');
 	}, 1);
 	setTimeout( function(){
-		$expl.remove();
+		//$expl.remove();
 	}, 1000);
 },
 

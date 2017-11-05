@@ -1,17 +1,20 @@
 /*
 * Shoot
 */
-.spell-shoot{
+.spell-s0{
+	z-index: 3;
 	position: absolute;
 	width: 5px;
 	height: 5px;
+	border: 1px solid;
 	-webkit-border-radius: 5px;
 	   -moz-border-radius: 5px;
 		 -o-border-radius: 5px;
 			border-radius: 5px;
-	background-color: #2A2A2A;
+	background-color: #614126;
 }
-.spell-shoot-explosion{
+div[class*="-explosion"]{
+	z-index: 5;
 	position: absolute;
 	display: inline-block;
 	background-color: #873B05;
@@ -27,11 +30,11 @@
 		 -o-transition: all .3s ease-out;
 			transition: all .3s ease-out;
 }
-
-.spell-shoot-explosion.expand{
+div[class*="-explosion"].expand{
+	z-index: 5;
 	width: 50px;
 	height: 50px;
-	background-color: #FCD700;
+	background-color: #f2dd5f;
 	opacity: 0;
 	margin-left: -25px;
 	margin-top: -25px;
@@ -45,12 +48,45 @@
 * s1 / aim_shoot
 */
 .spell-s1{
+	z-index: 3;
 	position: absolute;
 	width: 8px;
 	height: 8px;
+	border: 1px solid;
 	-webkit-border-radius: 5px;
 	   -moz-border-radius: 5px;
 		 -o-border-radius: 5px;
 			border-radius: 5px;
-	background-color: white;
+	background-color: #990000;
+}
+
+/*
+* s2 / slow
+*/
+.spell-s2{
+	z-index: 3;
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	border: 1px solid;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+		 -o-border-radius: 5px;
+			border-radius: 5px;
+	background-color: #79CDCD;
+}
+/*
+* s6 / back-dash
+*/
+.spell-s6{
+	z-index: 3;
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	border: 1px solid;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+		 -o-border-radius: 5px;
+			border-radius: 5px;
+	background-color: #FFA500;
 }
