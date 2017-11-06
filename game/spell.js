@@ -26,6 +26,20 @@ Spell.prototype = {
     this.y += speedY;
   },
 
+  hurtCharacter: function (character) {
+      var idSpell = this.idSpell;
+      var spellInfo = spellsInfos[idSpell];
+      spellInfo['level1'].debuff(character, this);
+      //console.log('new X : ' +character.buffDebuff.newX);
+  },
+
+  affectSpell: function (character){
+    var idSpell = this.idSpell;
+    var spellInfo = spellsInfos[idSpell];
+    spellInfo['level1'].buff(this, character);
+    this.out = true;
+  },
+
 };
 
 module.exports = Spell;

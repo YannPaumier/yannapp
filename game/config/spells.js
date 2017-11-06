@@ -87,13 +87,28 @@ module.exports = {
   s3:  {
     name: 'charge',
     isCibled: false,
-    isSelf: false,
+    isSelf: true,
     isAttack: true,
     isSpell: false,
     level1: {
       damage: '2',
       cooldown: '2',
       speed: 10,
+      buff: function (spell, character, target){
+        var newX;
+        var newY;
+        //var distanceXY = Math.sqrt( (Math.pow(target.x) - Math.pow(character.x)) + (Math.pow(target.y) - Math.pow(character.y)) );
+      //  if( distanceXY < 300 ){
+        //  newX = target.x;
+        //  newY = targe.y;
+        //}
+        var alpha = spell.alpha;
+        var speedX = 150 * Math.sin(alpha);
+        var speedY = -150 * Math.cos(alpha);
+        var newX = character.x + speedX;
+        var newY = character.y + speedY;
+        character.buffDebuff = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 };
+      },
       debuff: function (character, spell) {
         character.hp -= this.damage;
         //character.speed -= 5;

@@ -60,17 +60,19 @@ Game.prototype = {
 
   //The app has absolute control of the spells and their movement
   syncSpells: function () {
-    var self = this;
 
+      var self = this;
       this.spells.forEach(function (spell) {
-        /*
-          // Detect cibled or self spell
-        if(spellInfo[spell.idSpell].isSelf || spellInfo[spell.idSpell].isCibled){
-        //  spellInfo['level1'].buff
+        // Detect cibled or self spell
+        if(spellsInfos[spell.idSpell].isSelf || spellsInfos[spell.idSpell].isCibled){
+
+            self.affectSpells(spell);
         };
-        */
+
+
         // Detect collision
         self.detectCollision(spell);
+
         //Detect when spell is out of bounds
         if (spell.x < 0 || spell.x > WIDTH || spell.y < 0 || spell.y > HEIGHT) {
           spell.out = true;
@@ -80,6 +82,18 @@ Game.prototype = {
       });
     },
 
+  affectSpells: function(spell){
+    var self = this;
+
+      this.characters.forEach(function (character) {
+        if( character.id == spell.ownerId ){
+          console.log('x et y avant : '+character.x+ ' : '+character.y);
+          spell.affectSpell(character);
+          console.log('x et y après : '+character.x+ ' : '+character.y);
+        }
+      });
+  },
+
   //Detect if spell collides with any character
   detectCollision: function (spell) {
     var self = this;
@@ -88,7 +102,7 @@ Game.prototype = {
 
           if (character.id != spell.ownerId && Math.abs(character.x - spell.x) < 30 && Math.abs(character.y - spell.y) < 30) {
             //Hit character
-            self.hurtCharacter(character, spell);
+            spell.hurtCharacter(character);
             spell.out = true;
             spell.exploding = true;
           }
@@ -115,15 +129,6 @@ Game.prototype = {
             }
 
           },
-
-  hurtCharacter: function (character, spell) {
-      var idSpell = spell.idSpell;
-      var spellInfo = spellsInfos[idSpell];
-      spellInfo['level1'].debuff(character, spell);
-      //console.log('new X : ' +character.buffDebuff.newX);
-
-    //  character.hp -= damage;
-    },
 
   getData: function () {
     var gameData = {};
