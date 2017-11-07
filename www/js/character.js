@@ -39,6 +39,7 @@ function Character(characterData, isLocal, $arena) {
   };
   this.mx = null;
   this.my = null;
+  this.targetId = null;
 
   /*
   * spells
@@ -73,6 +74,9 @@ Character.prototype = {
     this.$body.css('width', this.w);
     this.$body.css('height', this.h);
 
+    // Set pointer on other characters
+    $('.character').not('#' + this.id).css('cursor', 'crosshair');
+
     // Set de sa position
     /*
     this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
@@ -86,7 +90,6 @@ Character.prototype = {
     this.$info = $('#info-' + this.id);
     this.$info.append('<div class="label">' + this.name + '</div>');
     this.$info.append('<div class="hp-bar">' + this.hp + '</div>');
-    //this.$info.append('<div class="hp-bar progress-bar progress-bar-success" role="progressbar" aria-valuenow="' + this.hp + '" aria-valuemin="0" aria-valuemax="' + this.initHp + '">' + this.hp + '</div>');
 
     this.refresh();
 
@@ -112,7 +115,7 @@ Character.prototype = {
     this.$info.css('top', (this.y) + 'px');
 
     this.$info.find('.hp-bar').css('width', (this.hp * 100) / this.initHp + 'px');
-    this.$info.find('.hp-bar').css('background-color', getGreenToRed( (this.hp * 100) / this.initHp));
+    this.$info.find('.hp-bar').css('background-color', getGreenToRed((this.hp * 100) / this.initHp));
     this.$info.find('.hp-bar').text(this.hp);
   },
 
@@ -185,6 +188,7 @@ Character.prototype = {
         break;
       }
     }).mousemove(function (e) { //Detect mouse for aiming
+      t.targetId = e.target.id;
       t.mx = e.pageX - t.$arena.offset().left;
       t.my = e.pageY - t.$arena.offset().top;
       t.setCharacterAngle();
@@ -202,10 +206,11 @@ Character.prototype = {
     /*
     * Gestion des déplaceemnts
     */
+
     // Indique si le joueur est en déplacement
-    if (this.dir.up || this.dir.down || this.dir.left || this.dir.right){
+    if (this.dir.up || this.dir.down || this.dir.left || this.dir.right) {
       this.isMoving = true;
-    }else{
+    }else {
       this.isMoving = false;
     }
 
@@ -225,10 +230,10 @@ Character.prototype = {
     }
 
     // Gestion des diagonales
-    if( moveX != 0 && moveY != 0 ) {
-      moveX =  Math.sin(45) * this.speed*moveX;
-      moveY =  Math.sin(45) * this.speed*moveY;
-    }else{
+    if (moveX != 0 && moveY != 0) {
+      moveX =  Math.sin(45) * this.speed * moveX;
+      moveY =  Math.sin(45) * this.speed * moveY;
+    }else {
       moveX = this.speed * moveX;
       moveY = this.speed * moveY;
     }
@@ -246,7 +251,7 @@ Character.prototype = {
     if (obst1.x < this.x + 10 + moveX &&
        obst1.x + obst1.width > (this.x + moveX) - 10 &&
        obst1.y < (this.$arena.height()) - (this.y + moveY)  - 20 &&
-       obst1.height + obst1.y > (this.$arena.height()) - (this.y + moveY) +20 ) {
+       obst1.height + obst1.y > (this.$arena.height()) - (this.y + moveY) + 20 ) {
       collision = true;
     }
 
@@ -341,6 +346,10 @@ Character.prototype = {
 
     clientSpell.idSpell = this.spells[action].id;
 
+    if($('#' + this.targetId).hasClass( 'character' )){
+      clientSpell.targetId = this.targetId;
+    }
+
     //Just for local balls who have owner
     clientSpell.alpha = this.characterAngle * Math.PI / 180; //angle of shot in radians
     //Set init position
@@ -381,31 +390,43 @@ Character.prototype = {
   },
 
   buffDebuff: function( newData ){
+      //newData = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 }
 
       var initX = this.x;
       var initY = this.y;
       var initAngle = this.angle;
       var initSpeed = this.speed;
-      //console.log('BUFFDEBBUFF with x : ' + newData.newX + ' et y : ' + newData.newY);
-      //console.log('this x : ' + this.x + ' this y : '+ this.y );
-      this.x= newData.newX;
-      this.y = newData.newY;
-      /*
-      if( (newData.newX && newData.newY) != null ){
-        while (this.x != newData.newX && this.y != newData.newY){
+
+      //this.x= newData.newX;
+      //this.y = newData.newY;
+
+      if( newData.newX != null && newData.newY != null ){
+        console.log('oldx : ' + this.x + ' newx : ' + newData.newX + ' oldy : ' + this.y + ' newy : ' + newData.newY);
+        var count = 0;
+
+        var interval = setInterval(function(){
+          count ++;
           console.log('DEPLACEMENT');
-          if( newData.newX < this.x){
+          if( this.x > newData.newX ){
             this.x -= 1;
-          }else{
+          }
+          if( this.x < newData.newX ){
             this.x += 1;
           }
-          if( newData.newY < this.y){
+          if( this.y > newData.newY ){
             this.y -= 1;
-          }else{
+          }
+          if( this.y < newData.newY ){
             this.y += 1;
           }
-        }
-      }*/
+        }, 30);
+
+        //interval();
+        if (this.x != newData.newX && this.y != newData.newY && count < 500){
+          clearInterval(interval);
+        };
+
+      }
 
       if(newData.timeout > 0 ){
         //console.log('RESET DE LA POSITION)')

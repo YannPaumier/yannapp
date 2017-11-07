@@ -1,9 +1,7 @@
 body{
-	cursor: url(../sprites/cursor.png), pointer;
 	background-color: #D3D3D3;
 	font-family: "League-Gothic", Courier;
 	overflow: hidden;
-
 }
 
 /*
@@ -20,7 +18,7 @@ body{
 	background-repeat:repeat;
 	background-size: 200px;
 	position: relative;
-	pointer-events: none;
+	cursor: pointer;
 }
 
 

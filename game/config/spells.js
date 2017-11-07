@@ -1,8 +1,8 @@
 module.exports = {
-/*
-* Hunter part
-*/
-   s0:  {
+  /*
+  * Hunter part
+  */
+  s0:  {
     name: 'shoot',
     isCibled: false,
     isSelf: false,
@@ -50,8 +50,8 @@ module.exports = {
         var damage = this.damage;
         character.hp -= damage;
         character.speed -= 2;
-        setTimeout(function(){
-          console.log('speed avant reset : ' +character.speed);
+        setTimeout(function () {
+          console.log('speed avant reset : ' + character.speed);
           character.speed += 2;
         }, 5000);
       },
@@ -86,8 +86,8 @@ module.exports = {
 
   s3:  {
     name: 'charge',
-    isCibled: false,
-    isSelf: true,
+    isCibled: true,
+    isSelf: false,
     isAttack: true,
     isSpell: false,
     level1: {
@@ -95,19 +95,19 @@ module.exports = {
       cooldown: '2',
       speed: 10,
       buff: function (spell, character, target){
+        console.log(' targetx : ' + target.x + ' cx ' +  character.x +  'targety: ' + target.y + ' cy ' +  character.y);
         var newX;
         var newY;
-        //var distanceXY = Math.sqrt( (Math.pow(target.x) - Math.pow(character.x)) + (Math.pow(target.y) - Math.pow(character.y)) );
-      //  if( distanceXY < 300 ){
-        //  newX = target.x;
-        //  newY = targe.y;
-        //}
-        var alpha = spell.alpha;
-        var speedX = 150 * Math.sin(alpha);
-        var speedY = -150 * Math.cos(alpha);
-        var newX = character.x + speedX;
-        var newY = character.y + speedY;
-        character.buffDebuff = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 };
+        var distanceXY = Math.sqrt( Math.pow((target.x - character.x), 2) +  Math.pow((target.y - character.y), 2) );
+        console.log('distance : '+ distanceXY);
+        if( distanceXY < 300 ){
+          newX = target.x;
+          newY = target.y;
+          character.buffDebuff = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 };
+        }else{
+          return;
+        }
+
       },
       debuff: function (character, spell) {
         character.hp -= this.damage;

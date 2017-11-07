@@ -36,18 +36,18 @@ Game.prototype = {
       this.lastSpellId = 0;
     }
 
-    var spell = new Spell(this.lastSpellId, spellData.idSpell, spellData.ownerId, spellData.alpha, spellData.x, spellData.y );
+    var spell = new Spell(this.lastSpellId, spellData.idSpell, spellData.ownerId, spellData.targetId, spellData.alpha, spellData.x, spellData.y );
 
     this.spells.push(spell);
   },
 
   removeCharacter: function (characterId) {
-      this.characters = this.characters.filter(
+    this.characters = this.characters.filter(
       function (t) { return t.id != characterId; });
     },
 
-  //Sync character with new data received from a client
-  syncCharacter: function (newCharacterData) {
+    //Sync character with new data received from a client
+    syncCharacter: function (newCharacterData) {
       this.characters.forEach(function (character) {
         if (character.id == newCharacterData.id) {
           character.x = newCharacterData.x;
@@ -58,17 +58,14 @@ Game.prototype = {
       });
     },
 
-  //The app has absolute control of the spells and their movement
-  syncSpells: function () {
+    //The app has absolute control of the spells and their movement
+    syncSpells: function () {
 
       var self = this;
       this.spells.forEach(function (spell) {
-        // Detect cibled or self spell
-        if(spellsInfos[spell.idSpell].isSelf || spellsInfos[spell.idSpell].isCibled){
 
-            self.affectSpells(spell);
-        };
-
+        // affect spells
+        self.affectSpells(spell);
 
         // Detect collision
         self.detectCollision(spell);
@@ -82,80 +79,87 @@ Game.prototype = {
       });
     },
 
-  affectSpells: function(spell){
-    var self = this;
-
+    affectSpells: function(spell){
+      var self = this;
+      var ownerCharacter;
+      var targetCharacter;
+      //console.log(' character id : ' + spell.ownerId + ' target id : ' +  spell.targetId);
       this.characters.forEach(function (character) {
         if( character.id == spell.ownerId ){
-          console.log('x et y avant : '+character.x+ ' : '+character.y);
-          spell.affectSpell(character);
-          console.log('x et y après : '+character.x+ ' : '+character.y);
+          ownerCharacter = character;
+        }
+        if( character.id == spell.targetId ){
+          //console.log('target find : ' + character.id);
+          targetCharacter = character;
         }
       });
-  },
 
-  //Detect if spell collides with any character
-  detectCollision: function (spell) {
-    var self = this;
+      spell.affectSpell(ownerCharacter, targetCharacter);
+
+    },
+
+    //Detect if spell collides with any character
+    detectCollision: function (spell) {
+      var self = this;
 
       this.characters.forEach(function (character) {
 
-          if (character.id != spell.ownerId && Math.abs(character.x - spell.x) < 30 && Math.abs(character.y - spell.y) < 30) {
-            //Hit character
-            spell.hurtCharacter(character);
+        if (character.id != spell.ownerId && Math.abs(character.x - spell.x) < 30 && Math.abs(character.y - spell.y) < 30) {
+          //Hit character
+          spell.hurtCharacter(character);
+          spell.out = true;
+          spell.exploding = true;
+        }
+      });
+
+      // Detect collisions with obstacles
+      var obst1 = { x: 240, y: (HEIGHT) - 459, width: 216, height: 259 };
+      var obst2 = { x: 800, y: (HEIGHT) - 459, width: 216, height: 259 };
+      var collision = false;
+      if (obst1.x < spell.x - 20 &&
+        obst1.x + obst1.width > spell.x + 20 &&
+        obst1.y < (HEIGHT - spell.y) - 40 &&
+        obst1.height + obst1.y > (HEIGHT - spell.y) + 40 ) {
+          spell.out = true;
+          spell.exploding = true;
+        }
+
+        if (obst2.x < spell.x - 20 &&
+          obst2.x + obst2.width > spell.x + 20 &&
+          obst2.y < (HEIGHT - spell.y) - 40 &&
+          obst2.height + obst2.y > (HEIGHT - spell.y) + 40 ) {
             spell.out = true;
             spell.exploding = true;
           }
-        });
 
-            // Detect collisions with obstacles
-            var obst1 = { x: 240, y: (HEIGHT) - 459, width: 216, height: 259 };
-            var obst2 = { x: 800, y: (HEIGHT) - 459, width: 216, height: 259 };
-            var collision = false;
-            if (obst1.x < spell.x - 20 &&
-          obst1.x + obst1.width > spell.x + 20 &&
-          obst1.y < (HEIGHT - spell.y) - 40 &&
-          obst1.height + obst1.y > (HEIGHT - spell.y) + 40 ) {
-              spell.out = true;
-              spell.exploding = true;
-            }
+        },
 
-            if (obst2.x < spell.x - 20 &&
-            obst2.x + obst2.width > spell.x + 20 &&
-            obst2.y < (HEIGHT - spell.y) - 40 &&
-            obst2.height + obst2.y > (HEIGHT - spell.y) + 40 ) {
-              spell.out = true;
-              spell.exploding = true;
-            }
+        getData: function () {
+          var gameData = {};
 
-          },
+          gameData.characters = this.characters;
+          gameData.spells = this.spells;
 
-  getData: function () {
-    var gameData = {};
+          return gameData;
+        },
 
-    gameData.characters = this.characters;
-    gameData.spells = this.spells;
+        cleanCharacters: function () {
+          // Remove debuff
+          this.characters.forEach(function(c){
+            c.buffDebuff = null;
+          });
 
-    return gameData;
-  },
+          // Remove dead characters
+          this.characters = this.characters.filter(function (t) {
+            return t.hp > 0;
+          });
+        },
 
-  cleanCharacters: function () {
-    // Remove debuff
-    this.characters.forEach(function(c){
-      c.buffDebuff = null;
-    });
+        cleanSpells: function () {
+          this.spells = this.spells.filter(function (spell) {
+            return !spell.out;
+          });
+        },
+      };
 
-    // Remove dead characters
-    this.characters = this.characters.filter(function (t) {
-      return t.hp > 0;
-    });
-  },
-
-  cleanSpells: function () {
-    this.spells = this.spells.filter(function (spell) {
-      return !spell.out;
-    });
-  },
-};
-
-module.exports = Game;
+      module.exports = Game;

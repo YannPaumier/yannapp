@@ -1,11 +1,12 @@
 var spellsInfos = require('./config/spells.js');
 
-function Spell(id, idSpell, ownerId, alpha, x, y) {
+function Spell(id, idSpell, ownerId, targetId, alpha, x, y) {
   //console.log ('newBall : '+ownerId+ ' : ' + alpha + ' : ' + x + ' : ' +y );
 
   this.id = id;
   this.idSpell = idSpell;
   this.ownerId = ownerId;
+  this.targetId = targetId;
   this.alpha = alpha; //angle of shot in radians
   this.x = x;
   this.y = y;
@@ -33,10 +34,19 @@ Spell.prototype = {
       //console.log('new X : ' +character.buffDebuff.newX);
   },
 
-  affectSpell: function (character){
+  affectSpell: function (ownerCharacter, targetCharacter){
     var idSpell = this.idSpell;
     var spellInfo = spellsInfos[idSpell];
-    spellInfo['level1'].buff(this, character);
+
+    // Detect isCibled spell
+    if(spellInfo.isCibled && targetCharacter !== undefined && this.ownerId !== undefined){
+      spellInfo['level1'].buff(this, ownerCharacter, targetCharacter);
+    }
+    // Detect isSelf spell
+    if(spellInfo.isSelf){
+      spellInfo['level1'].buff(this, ownerCharacter);
+    }
+
     this.out = true;
   },
 
