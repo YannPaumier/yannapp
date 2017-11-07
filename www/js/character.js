@@ -399,34 +399,38 @@ Character.prototype = {
 
       //this.x= newData.newX;
       //this.y = newData.newY;
-
+      var t = this;
       if( newData.newX != null && newData.newY != null ){
-        console.log('oldx : ' + this.x + ' newx : ' + newData.newX + ' oldy : ' + this.y + ' newy : ' + newData.newY);
+
         var count = 0;
 
-        var interval = setInterval(function(){
-          count ++;
-          console.log('DEPLACEMENT');
-          if( this.x > newData.newX ){
-            this.x -= 1;
-          }
-          if( this.x < newData.newX ){
-            this.x += 1;
-          }
-          if( this.y > newData.newY ){
-            this.y -= 1;
-          }
-          if( this.y < newData.newY ){
-            this.y += 1;
-          }
-        }, 30);
+        function myLoop () {
 
-        //interval();
-        if (this.x != newData.newX && this.y != newData.newY && count < 500){
-          clearInterval(interval);
-        };
+           setTimeout(function () {
+             count ++;
+             console.log('DEPLACEMENT');
+             console.log('oldx : ' + t.x + ' newx : ' + newData.newX + ' oldy : ' + t.y + ' newy : ' + newData.newY);
+             if (t.x != newData.newX && t.y != newData.newY && count < 500){
+               if( t.x > newData.newX ){
+                 t.x -= 1;
+               }
+               if( t.x < newData.newX ){
+                 t.x += 1;
+               }
+               if( t.y > newData.newY ){
+                 t.y -= 1;
+               }
+               if( t.y < newData.newY ){
+                 t.y += 1;
+               }
+               myLoop();
+             }
+           }, 0)
+        }
 
+        myLoop();
       }
+
 
       if(newData.timeout > 0 ){
         //console.log('RESET DE LA POSITION)')
