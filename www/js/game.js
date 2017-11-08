@@ -102,14 +102,18 @@ Game.prototype = {
 
         //Update local character stats
         if (game.localCharacter !== undefined && serverCharacter.id == game.localCharacter.id) {
-          game.localCharacter.hp = serverCharacter.hp;
-          game.localCharacter.speed = serverCharacter.speed;
 
-          if( serverCharacter.buffDebuff != null ){
-            console.log( ' lobject ' + serverCharacter.buffDebuff.newX);
-            game.localCharacter.buffDebuff(serverCharacter.buffDebuff);
+          // Updtade vita
+          if ( serverCharacter.hp != game.localCharacter.hp ){
+            game.localCharacter.updateHp(serverCharacter.hp);
           }
 
+          // Affect spell
+          if( serverCharacter.spellAffection != null ){
+            game.localCharacter.affectSpell(serverCharacter.spellAffection);
+          }
+
+          // Kill character if no HP
           if (game.localCharacter.hp <= 0) {
             game.killCharacter(game.localCharacter);
           }
@@ -130,14 +134,16 @@ Game.prototype = {
               game.killCharacter(clientCharacter);
             }
 
+            // update foreign caracter data
             clientCharacter.refresh();
             found = true;
           }
         });
 
+        // If not found character
         if (!found &&
         (game.localCharacter == undefined || serverCharacter.id != game.localCharacter.id)) {
-          //I need to create it
+          //Create it
           game.addCharacter( serverCharacter, false);
         }
       });

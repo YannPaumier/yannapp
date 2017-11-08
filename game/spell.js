@@ -22,15 +22,17 @@ Spell.prototype = {
     var speed = spellInfo['level1'].speed;
 
     var speedX = speed * Math.sin(this.alpha);
-    var speedY = -speed * Math.cos(this.alpha);
+    var speedY = - speed * Math.cos(this.alpha);
     this.x += speedX;
     this.y += speedY;
   },
 
   hurtCharacter: function (character) {
-      var idSpell = this.idSpell;
-      var spellInfo = spellsInfos[idSpell];
-      spellInfo['level1'].debuff(character, this);
+      var spellInfo = spellsInfos[this.idSpell];
+      spellInfo['level1'].debuff(this, character);
+      console.log('HURT');
+      this.out = true;
+      this.exploding = true;
       //console.log('new X : ' +character.buffDebuff.newX);
   },
 
@@ -41,13 +43,16 @@ Spell.prototype = {
     // Detect isCibled spell
     if(spellInfo.isCibled && targetCharacter !== undefined && this.ownerId !== undefined){
       spellInfo['level1'].buff(this, ownerCharacter, targetCharacter);
+      spellInfo['level1'].debuff(this, targetCharacter);
+      this.out = true;
     }
     // Detect isSelf spell
     if(spellInfo.isSelf){
       spellInfo['level1'].buff(this, ownerCharacter);
+      this.out = true;
     }
 
-    this.out = true;
+
   },
 
 };

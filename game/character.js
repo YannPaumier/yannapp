@@ -7,7 +7,8 @@ function Character(id, type, name) {
   this.type = type;
 
   this.spells = {};
-  this.buffDebuff = null;
+  this.carac = {};
+  this.spellAffection = null;
 
   this.setStats();
   this.initPosition();
@@ -20,7 +21,8 @@ Character.prototype = {
     var infos = helpers.getCharacterInfos(this.type);
 
     this.hp = infos.vitality;
-    this.speed = infos.speed;
+    this.carac = { speed: infos.speed };
+    //this.speed = infos.speed;
 
 
     // Récupération des spells du character

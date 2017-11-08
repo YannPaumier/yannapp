@@ -12,7 +12,7 @@ function Character(characterData, isLocal, $arena) {
   this.initHp = characterData.hp;
   this.hp = characterData.hp;
   this.isLocal = isLocal;
-  this.speed = characterData.speed;
+  this.speed = characterData.carac.speed;
   this.w = 100;
   this.h = 100;
 
@@ -89,8 +89,7 @@ Character.prototype = {
     this.$arena.append('<div id="info-' + this.id + '" class="info"></div>');
     this.$info = $('#info-' + this.id);
     this.$info.append('<div class="label">' + this.name + '</div>');
-    this.$info.append('<div class="hp-bar">' + this.hp + '</div>');
-
+    this.$info.append('<div class="hp-bar"><span class="hp">' + this.hp + '</span><span class="alert"></span></div>');
     this.refresh();
 
     if (this.isLocal) {
@@ -116,7 +115,13 @@ Character.prototype = {
 
     this.$info.find('.hp-bar').css('width', (this.hp * 100) / this.initHp + 'px');
     this.$info.find('.hp-bar').css('background-color', getGreenToRed((this.hp * 100) / this.initHp));
-    this.$info.find('.hp-bar').text(this.hp);
+    this.$info.find('.hp').text(this.hp);
+  },
+
+  updateHp: function (hp) {
+    this.hp = hp;
+    var diffHp = hp - this.hp;
+    this.$info.find('.alert').text(diffHp);
   },
 
   setControls: function () {
@@ -389,7 +394,7 @@ Character.prototype = {
 
   },
 
-  buffDebuff: function( newData ){
+  affectSpell: function( newData ){
       //newData = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 }
 
       var initX = this.x;
@@ -397,53 +402,80 @@ Character.prototype = {
       var initAngle = this.angle;
       var initSpeed = this.speed;
 
-      var t = this;
-
+      // Affecter un deplacement
       if( newData.newX != null && newData.newY != null ){
-
-        var count = 0;
-
         console.log('DEPLACEMENT');
-        console.log('oldx : ' + t.x + ' newx : ' + newData.newX + ' oldy : ' + t.y + ' newy : ' + newData.newY);
+        var count = 0;
+        var tempX = this.x;
+        var tempY = this.y;
 
-        this.$body.animate({
-        left: '250px',
-        opacity: '0.5',
-    });
-      //this.x= newData.newX;
-      //this.y = newData.newY;
+        var calculTang = function(x, y){
+          return Math.sqrt( Math.pow(x - newData.newX, 2) + Math.pow(y - newData.newY, 2) );
+        };
 
-     /*
-     if (t.x != newData.newX && t.y != newData.newY){
-       if( t.x > newData.newX ){
-         t.x -= 1;
-       }
-       if( t.x < newData.newX ){
-         t.x += 1;
-       }
-       if( t.y > newData.newY ){
-         t.y -= 1;
-       }
-       if( t.y < newData.newY ){
-         t.y += 1;
-       }
+        var tang = calculTang(this.x, this.y);
+        //console.log('Tang : ' + tang);
+        while ( tang > 10) {
+          //console.log('oldx : ' + t.x + ' newx : ' + newData.newX + ' oldy : ' + t.y + ' newy : ' + newData.newY);
+          var option = 1;
+          tang = calculTang( this.x + 1, this.y + 1 );
+
+          if( calculTang(this.x + 1, this.y - 1) < tang ){
+            option = 2;
+          }
+          if( calculTang(this.x - 1, this.y - 1) < tang ){
+            option = 3;
+          }
+          if( calculTang(this.x - 1, this.y + 1) < tang ){
+            option = 4;
+          }
+
+          switch (option) {
+            case 1:
+              this.x += 1;
+              this.y += 1;
+              break;
+            case 2:
+              this.x += 1;
+              this.y -= 1;
+              break;
+            case 3:
+              this.x -= 1;
+              this.y -= 1;
+              break;
+            case 4:
+              this.x -= 1;
+              this.y += 1;
+              break;
+          }
+
+        }
 
       }
-    }
-    */
-  }
 
+      // Affection de la vitesse
+      if(newData.newSpeed != null){
+        console.log('affection new speed : '+ newData.newSpeed);
+        this.speed = newData.newSpeed;
+      }
+
+      var t = this;
+      // Reset en cas de timeout
       if(newData.timeout > 0 ){
-        //console.log('RESET DE LA POSITION)')
         setTimeout(function(){
-          if(newData.newX != null)
-          this.x = initX;
-          if(newData.newY != null)
-          this.y = initY;
-          if(newData.newAngle != null)
-          this.angle = initAngle;
-          if(newData.newSpeed != null)
-          this.speed = initSpeed;
+          if(newData.newX != null){
+              t.x = initX;
+          }
+          if(newData.newY != null){
+              t.y = initY;
+          }
+          if(newData.newAngle != null){
+            t.angle = initAngle;
+          }
+          if(newData.newSpeed != null){
+              console.log('RESET DU TIMEOUT, old speed : ' + initSpeed);
+            t.speed = initSpeed;
+          }
         }, newData.timeout);
       }
   },

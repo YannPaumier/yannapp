@@ -107,8 +107,6 @@ Game.prototype = {
         if (character.id != spell.ownerId && Math.abs(character.x - spell.x) < 30 && Math.abs(character.y - spell.y) < 30) {
           //Hit character
           spell.hurtCharacter(character);
-          spell.out = true;
-          spell.exploding = true;
         }
       });
 
@@ -146,7 +144,7 @@ Game.prototype = {
         cleanCharacters: function () {
           // Remove debuff
           this.characters.forEach(function(c){
-            c.buffDebuff = null;
+            c.spellAffection = null;
           });
 
           // Remove dead characters

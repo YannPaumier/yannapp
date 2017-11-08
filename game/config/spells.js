@@ -12,7 +12,7 @@ module.exports = {
       damage: '8',
       cooldown: '0',
       speed: 10,
-      debuff: function (character, spell) {
+      debuff: function (spell, character) {
         var damage = this.damage;
         character.hp -= damage;
       },
@@ -29,7 +29,7 @@ module.exports = {
       damage: '50',
       cooldown: '3',
       speed: 20,
-      debuff: function (character, spell) {
+      debuff: function (spell, character) {
         character.hp -= this.damage;
         //return character;
       },
@@ -46,7 +46,7 @@ module.exports = {
       damage: '2',
       cooldown: '5',
       speed: 30,
-      debuff: function (character, spell) {
+      debuff: function (spell, character) {
         var damage = this.damage;
         character.hp -= damage;
         character.speed -= 2;
@@ -68,14 +68,14 @@ module.exports = {
       damage: '2',
       cooldown: '2',
       speed: 30,
-      debuff: function (character, spell) {
+      debuff: function (spell, character) {
         character.hp -= this.damage;
         var alpha = spell.alpha;
         var speedX = 100 * Math.sin(alpha);
         var speedY = -100 * Math.cos(alpha);
         var newX = character.x + speedX;
         var newY = character.y + speedY;
-        character.buffDebuff = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 };
+        character.spellAffection = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 };
       },
     },
   },
@@ -91,7 +91,7 @@ module.exports = {
     isAttack: true,
     isSpell: false,
     level1: {
-      damage: '2',
+      damage: '30',
       cooldown: '2',
       speed: 10,
       buff: function (spell, character, target){
@@ -103,16 +103,17 @@ module.exports = {
         if( distanceXY < 300 ){
           newX = target.x;
           newY = target.y;
-          character.buffDebuff = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 };
+          character.spellAffection = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 };
         }else{
           return;
         }
 
       },
-      debuff: function (character, spell) {
+      debuff: function (spell, character) {
         character.hp -= this.damage;
+        var newSpeed = 0;
+        character.spellAffection = { newX: null , newY: null, newAngle: null, newSpeed: newSpeed, timeout: 3000 };
         //character.speed -= 5;
-        return character;
       },
     },
   },
@@ -127,7 +128,7 @@ module.exports = {
       damage: '2',
       cooldown: '2',
       speed: 10,
-      debuff: function (character, spell) {
+      debuff: function (spell, character) {
         character.hp -= this.damage;
         //character.speed -= 5;
         return character;
@@ -145,7 +146,7 @@ module.exports = {
       damage: '2',
       cooldown: '2',
       speed: 10,
-      debuff: function (character, spell) {
+      debuff: function (spell, character) {
         character.hp -= this.damage;
         //character.speed -= 5;
         return character;

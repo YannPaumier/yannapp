@@ -35,5 +35,4 @@ explode: function(){
 		//$expl.remove();
 	}, 1000);
 },
-
 }
