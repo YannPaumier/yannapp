@@ -1,9 +1,10 @@
-function Spell(id, idSpell, ownerId, $arena, x, y) {
+function Spell(id, idSpell, ownerId, isProjectile, $arena, x, y) {
 // spellId - pour récupérer l'animation
 // characterId
 
 this.id = id;
 this.idSpell = idSpell;
+this.isProjectile = isProjectile;
 this.ownerId = ownerId;
 this.$arena = $arena;
 this.x = x;
@@ -11,7 +12,10 @@ this.y = y;
 
 this.exploding = false;
 
-this.materialize();
+if(this.isProjectile){
+	this.materialize();
+}
+
 }
 
 Spell.prototype = {

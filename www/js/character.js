@@ -119,8 +119,8 @@ Character.prototype = {
   },
 
   updateHp: function (hp) {
-    this.hp = hp;
     var diffHp = hp - this.hp;
+    this.hp = hp;
     this.$info.find('.alert').text(diffHp);
   },
 
@@ -349,22 +349,23 @@ Character.prototype = {
     //Emit spell to server
     var clientSpell = {};
 
+    clientSpell.ownerId = this.id;
     clientSpell.idSpell = this.spells[action].id;
 
-    if($('#' + this.targetId).hasClass( 'character' )){
+    if( this.targetId != ''  && $('#' + this.targetId).hasClass( 'character' )  ){
       clientSpell.targetId = this.targetId;
     }
 
-    //Just for local balls who have owner
-    clientSpell.alpha = this.characterAngle * Math.PI / 180; //angle of shot in radians
-    //Set init position
-    var cannonLength = 20;
-    var deltaX = cannonLength * Math.sin(clientSpell.alpha);
-    var deltaY = cannonLength * Math.cos(clientSpell.alpha);
-
-    clientSpell.ownerId = this.id;
-    clientSpell.x = this.x + deltaX - 5;
-    clientSpell.y = this.y - deltaY - 5;
+    if(this.spells[action].isProjectile){
+      //Just for local balls who have owner
+      clientSpell.alpha = this.characterAngle * Math.PI / 180; //angle of shot in radians
+      //Set init position
+      var cannonLength = 20;
+      var deltaX = cannonLength * Math.sin(clientSpell.alpha);
+      var deltaY = cannonLength * Math.cos(clientSpell.alpha);
+      clientSpell.x = this.x + deltaX - 5;
+      clientSpell.y = this.y - deltaY - 5;
+    }
 
     socket.emit('spell', clientSpell);
 
@@ -404,7 +405,7 @@ Character.prototype = {
 
       // Affecter un deplacement
       if( newData.newX != null && newData.newY != null ){
-        console.log('DEPLACEMENT');
+        //console.log('DEPLACEMENT');
         var count = 0;
         var tempX = this.x;
         var tempY = this.y;
@@ -455,7 +456,7 @@ Character.prototype = {
 
       // Affection de la vitesse
       if(newData.newSpeed != null){
-        console.log('affection new speed : '+ newData.newSpeed);
+        //console.log('affection new speed : '+ newData.newSpeed);
         this.speed = newData.newSpeed;
       }
 
@@ -473,7 +474,7 @@ Character.prototype = {
             t.angle = initAngle;
           }
           if(newData.newSpeed != null){
-              console.log('RESET DU TIMEOUT, old speed : ' + initSpeed);
+              //console.log('RESET DU TIMEOUT, old speed : ' + initSpeed);
             t.speed = initSpeed;
           }
         }, newData.timeout);

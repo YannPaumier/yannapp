@@ -153,7 +153,7 @@ Game.prototype = {
 
     serverData.spells.forEach(function (serverSpell) {
       //console.log('new ball : '+serverSpell.y);
-      var s = new Spell(serverSpell.id, serverSpell.idSpell, serverSpell.ownerId, game.$arena, serverSpell.x, serverSpell.y);
+      var s = new Spell(serverSpell.id, serverSpell.idSpell, serverSpell.ownerId, serverSpell.isProjectile, game.$arena, serverSpell.x, serverSpell.y);
       s.exploding = serverSpell.exploding;
       if (s.exploding) {
         s.explode();

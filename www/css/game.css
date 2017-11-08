@@ -154,7 +154,9 @@ body{
 	border-radius: 2px;
 	margin: 0 auto;
 }
-
+.alert{
+	align: right;
+}
 /*
 * Prompt de selection
 */

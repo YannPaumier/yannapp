@@ -60,7 +60,6 @@ Game.prototype = {
 
     //The app has absolute control of the spells and their movement
     syncSpells: function () {
-
       var self = this;
       this.spells.forEach(function (spell) {
 

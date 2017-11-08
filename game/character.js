@@ -40,7 +40,7 @@ Character.prototype = {
         if (count == 0)
           spellKey = 'lc';
 
-        t.spells[count] = {id: value, name: spellInfo.name, cooldown: spellInfo.level1.cooldown, isAttack: spellInfo.isAttack, isSpell: spellInfo.isSpell, spellKey: spellKey};
+        t.spells[count] = {id: value, name: spellInfo.name, cooldown: spellInfo.level1.cooldown, isAttack: spellInfo.isAttack, isSpell: spellInfo.isSpell, isProjectile: spellInfo.isProjectile, spellKey: spellKey};
         count++;
       }
     });
