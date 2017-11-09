@@ -29,7 +29,7 @@ Game.prototype = {
   },
 
   addSpell: function (spellData) {
-    //console.log('add one spell id : ' + spellData.idSpell + ' owner : ' + spellData.ownerId);
+    console.log('add one spell id : ' + spellData.idSpell + ' owner : ' + spellData.ownerId);
 
     this.lastSpellId++;
     if (this.lastSpellId > 1000) {
@@ -46,34 +46,49 @@ Game.prototype = {
       function (t) { return t.id != characterId; });
     },
 
-    //Sync character with new data received from a client
-    syncCharacter: function (newCharacterData) {
-      this.characters.forEach(function (character) {
-        if (character.id == newCharacterData.id) {
-          character.x = newCharacterData.x;
-          character.y = newCharacterData.y;
-          character.isMoving = newCharacterData.isMoving;
-          character.characterAngle = newCharacterData.characterAngle;
-        }
-      });
-    },
+  //Sync character with new data received from a client
+  syncCharacter: function (newCharacterData) {
+    this.characters.forEach(function (character) {
+      if (character.id == newCharacterData.id) {
+        character.x = newCharacterData.x;
+        character.y = newCharacterData.y;
+        character.isMoving = newCharacterData.isMoving;
+        character.characterAngle = newCharacterData.characterAngle;
+      }
+    });
+  },
 
     //The app has absolute control of the spells and their movement
     syncSpells: function () {
       var self = this;
       this.spells.forEach(function (spell) {
 
-        // affect spells
-        self.affectSpells(spell);
-
-        // Detect collision
-        self.detectCollision(spell);
-
-        //Detect when spell is out of bounds
-        if (spell.x < 0 || spell.x > WIDTH || spell.y < 0 || spell.y > HEIGHT) {
+        // Si CAC
+        if ( spell.idSpell == 0 ){
+          console.log('CAC DETECT ON SERVEUR');
+          self.attack(spell);
           spell.out = true;
-        }else {
-          spell.fly();
+        }else{    // Sinon
+          // affect spells
+          self.affectSpells(spell);
+
+          // Detect collision
+          self.detectCollision(spell);
+
+          //Detect when spell is out of bounds
+          if (spell.x < 0 || spell.x > WIDTH || spell.y < 0 || spell.y > HEIGHT) {
+            spell.out = true;
+          }else {
+            spell.fly();
+          }
+        }
+      });
+    },
+
+    attack: function (spell){
+      this.characters.forEach(function (character) {
+        if( character.id == spell.targetId ){
+          character.hp -= 100;
         }
       });
     },
@@ -103,7 +118,7 @@ Game.prototype = {
 
       this.characters.forEach(function (character) {
 
-        if (character.id != spell.ownerId && Math.abs(character.x - spell.x) < 30 && Math.abs(character.y - spell.y) < 30) {
+        if (character.id != spell.ownerId && Math.abs(character.x - spell.x) < 40 && Math.abs(character.y - spell.y) < 40) {
           //Hit character
           spell.hurtCharacter(character);
         }

@@ -29,7 +29,7 @@ Character.prototype = {
     var characterSpells = infos.spells;
 
     var t = this;
-    var count = 0;
+    var count = 1;
     characterSpells.forEach(function(value){
       if( spellsInfos[value] != undefined ){
         var spellInfo = spellsInfos[value];
@@ -37,8 +37,6 @@ Character.prototype = {
         //console.log('name : ' + spellInfo.name);
         //console.log('cooldown : ' + spellInfo.level1.cooldown);
         var spellKey = count;
-        if (count == 0)
-          spellKey = 'lc';
 
         t.spells[count] = {id: value, name: spellInfo.name, cooldown: spellInfo.level1.cooldown, isAttack: spellInfo.isAttack, isSpell: spellInfo.isSpell, isProjectile: spellInfo.isProjectile, spellKey: spellKey};
         count++;

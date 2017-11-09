@@ -103,7 +103,7 @@ module.exports = {
         if( distanceXY < 300 ){
           newX = target.x;
           newY = target.y;
-          character.spellAffection = { newX: newX , newY: newY, newAngle: null, newSpeed: 0, timeout: 0 };
+          character.spellAffection = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 };
 
           target.hp -= this.damage;
           target.spellAffection = { newX: null , newY: null, newAngle: null, newSpeed: 0, timeout: 3000 };

@@ -30,7 +30,7 @@ Game.prototype = {
     // Set spells layout
     for (var property in characterData.spells) {
       if (characterData.spells.hasOwnProperty(property)) {
-          // console.log('name : ' + characterData.spells[property].name);
+          //console.log('name : ' + characterData.spells[property].name);
           $('#block-'+property).append(characterData.spells[property].name);
       }
     }

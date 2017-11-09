@@ -11,7 +11,9 @@ function Spell(id, idSpell, ownerId, targetId, alpha, x, y) {
   this.x = x;
   this.y = y;
   this.out = false;
-  this.isProjectile = spellsInfos[this.idSpell].isProjectile;
+  if(this.idSpell != 0){
+    this.isProjectile = spellsInfos[this.idSpell].isProjectile;
+  }
 
 }
 
@@ -31,7 +33,7 @@ Spell.prototype = {
   hurtCharacter: function (character) {
       var spellInfo = spellsInfos[this.idSpell];
       spellInfo['level1'].assignment(this, character);
-      console.log('HURT');
+      //console.log('HURT');
       this.out = true;
       this.exploding = true;
       //console.log('new X : ' +character.buffDebuff.newX);
@@ -43,7 +45,7 @@ Spell.prototype = {
 
     // Detect isCibled spell
     if(spellInfo.isCibled && targetCharacter !== undefined && this.ownerId !== undefined){
-      console.log('owner : ' + ownerCharacter.x +' target : ' + targetCharacter)
+      //console.log('owner : ' + ownerCharacter.x +' target : ' + targetCharacter)
       spellInfo['level1'].assignment(this, ownerCharacter, targetCharacter);
       this.out = true;
     }
@@ -52,7 +54,6 @@ Spell.prototype = {
       spellInfo['level1'].assignment(this, ownerCharacter);
       this.out = true;
     }
-
 
   },
 

@@ -13,8 +13,9 @@ function Character(characterData, isLocal, $arena) {
   this.hp = characterData.hp;
   this.isLocal = isLocal;
   this.speed = characterData.carac.speed;
-  this.w = 100;
-  this.h = 100;
+
+  this.w = 120;
+  this.h = 120;
 
   this.dead = false;
   this.isMoving = false;
@@ -47,8 +48,8 @@ function Character(characterData, isLocal, $arena) {
   this.spells = characterData.spells;
 
   this.globalcd = false;
+  this.attackcd = false;
   this.cds = {
-    0: false,
     1: false,
     2: false,
     3: false,
@@ -77,14 +78,6 @@ Character.prototype = {
     // Set pointer on other characters
     $('.character').not('#' + this.id).css('cursor', 'crosshair');
 
-    // Set de sa position
-    /*
-    this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-    this.$body.css('-moz-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-    this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-    this.$body.css('transform', 'rotateZ(' + this.characterAngle + 'deg)');
-    */
-
     // Ajout des infos du character
     this.$arena.append('<div id="info-' + this.id + '" class="info"></div>');
     this.$info = $('#info-' + this.id);
@@ -103,12 +96,6 @@ Character.prototype = {
     this.$body.css('top', this.y - (this.h / 2)  + 'px');
 
     this.anime();
-    /*
-    this.$body.css('-webkit-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-    this.$body.css('-moz-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-    this.$body.css('-o-transform', 'rotateZ(' + this.characterAngle + 'deg)');
-    this.$body.css('transform', 'rotateZ(' + this.characterAngle + 'deg)');
-    */
 
     this.$info.css('left', (this.x) + 'px');
     this.$info.css('top', (this.y) + 'px');
@@ -148,31 +135,31 @@ Character.prototype = {
         break;
         case 38://1
         case 49: //1
-          t.spell('1');
+          t.spell('2');
         break;
         case 233://2
         case 50: //2
-          t.spell('2');
+          t.spell('3');
         break;
         case 34://3
         case 51: //3
-          t.spell('3');
+          t.spell('4');
         break;
         case 39://4
         case 52: //4
-          t.spell('4');
+          t.spell('5');
         break;
         case 40: //5
         case 53: //5
-          t.spell('5');
+          t.spell('6');
         break;
         case 70: //r
         case 102: //r
-          t.spell('6');
+          t.spell('7');
         break;
         case 114://f
         case 82: //f
-          t.spell('7');
+          t.spell('8');
         break;
       }
 
@@ -193,12 +180,14 @@ Character.prototype = {
         break;
       }
     }).mousemove(function (e) { //Detect mouse for aiming
-      t.targetId = e.target.id;
+      if( e.target.id != ''  && $('#' + e.target.id).hasClass( 'character' )  ){
+        t.targetId = e.target.id;
+      }
       t.mx = e.pageX - t.$arena.offset().left;
       t.my = e.pageY - t.$arena.offset().top;
       t.setCharacterAngle();
     }).click(function () {
-      t.spell('0');
+      t.spell('1');
     });
 
   },
@@ -277,8 +266,8 @@ Character.prototype = {
 
     //this.rotateBase();
     this.setCharacterAngle();
+    this.checkCac();
     this.refresh();
-
   },
 
   setCharacterAngle: function () {
@@ -287,6 +276,33 @@ Character.prototype = {
     var deltaY = this.my - char.y;
     this.characterAngle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
     this.characterAngle += 90;
+  },
+
+  checkCac: function(){
+    var c = this;
+    var thisTop = $(this.$body).offset().top;
+    var thisLeft = $(this.$body).offset().left;
+    //console.log('this top : ' + thisTop + ' this left : ' + thisLeft);
+    $(".character").not('#' + c.id).each(function(){
+      // angle in radians
+      var angleRadians = Math.atan2( $(this).offset().top - thisTop, $(this).offset().left - thisLeft);
+      // angle in degrees
+      var angleDeg = angleRadians * 180 / Math.PI;
+      angleDeg += 90;
+
+      var diffTop = thisTop - $(this).offset().top;
+      var diffLeft = thisLeft - $(this).offset().left;
+
+      var diffAngle = Math.abs(angleDeg - c.characterAngle);
+
+      //console.log(' id : ' + this + ' top : ' + top + ' left : ' + left);
+      if(diffAngle <= 45 && Math.abs(diffTop) < 80 && Math.abs(diffLeft) < 80){
+        //console.log('COLLISION CAC!');
+        //console.log(' angle  : ' + angleDeg + ' character angle : ' + c.characterAngle);
+        //console.log('diff angle : ' +diffAngle);
+        c.attack(c.targetId);
+      }
+    });
   },
 
   anime: function () {
@@ -328,10 +344,47 @@ Character.prototype = {
 
   },
 
-  spell: function (action) {
+  attack: function (target) {
+
+    // If dead
     if (this.dead) {
       return;
     }
+    // InCd
+    if ( this.attackcd ){
+      return;
+    }
+
+    var b = this;
+    // Set du mouvement pour animation
+    b.isAttacking = true;
+    setTimeout(function(){
+      b.isAttacking = false;
+    }, 1800);
+
+    //Emit spell to server
+    var clientSpell = {};
+    clientSpell.ownerId = target;
+    clientSpell.idSpell = 0;
+    clientSpell.targetId = this.targetId;
+
+    socket.emit('spell', clientSpell);
+
+    b.attackcd = true;
+    setTimeout(function(){
+        b.attackcd = false;
+    }, 3000);
+
+    return;
+  },
+
+  spell: function (action) {
+    // If dead
+    if (this.dead) {
+      return;
+    }
+
+    // InCd
     if (this.globalcd || this.cds[action]){
       return;
     }

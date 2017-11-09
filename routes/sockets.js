@@ -13,6 +13,7 @@ module.exports = (app, io, game) => {
     });
 
     client.on('sync', function (data) {
+
       //Receive data from clients
       if (data.character != undefined) {
         game.syncCharacter(data.character);
@@ -32,7 +33,7 @@ module.exports = (app, io, game) => {
 
       //counter ++;
     });
-
+    
     client.on('spell', function (spellData) {
       game.addSpell(spellData);
     });
