@@ -4,8 +4,8 @@
 .spell-s0{
 	z-index: 3;
 	position: absolute;
-	width: 5px;
-	height: 5px;
+	width: 6px;
+	height: 6px;
 	border: 1px solid;
 	-webkit-border-radius: 5px;
 	   -moz-border-radius: 5px;
@@ -50,8 +50,8 @@ div[class*="-explosion"].expand{
 .spell-s1{
 	z-index: 3;
 	position: absolute;
-	width: 8px;
-	height: 8px;
+	width: 10px;
+	height: 10px;
 	border: 1px solid;
 	-webkit-border-radius: 5px;
 	   -moz-border-radius: 5px;

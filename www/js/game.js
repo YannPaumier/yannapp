@@ -25,8 +25,8 @@ Game.prototype = {
     }
   },
 
-  setLayout: function(characterData){
 
+  setLayout: function(characterData){
     // Set spells layout
     for (var property in characterData.spells) {
       if (characterData.spells.hasOwnProperty(property)) {
@@ -129,7 +129,7 @@ Game.prototype = {
             clientCharacter.y = serverCharacter.y;
             clientCharacter.isMoving = serverCharacter.isMoving;
             clientCharacter.characterAngle = serverCharacter.characterAngle;
-            clientCharacter.hp = serverCharacter.hp;
+            clientCharacter.updateHp(serverCharacter.hp);
             if (clientCharacter.hp <= 0) {
               game.killCharacter(clientCharacter);
             }

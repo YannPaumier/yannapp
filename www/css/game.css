@@ -4,6 +4,7 @@ body{
 	overflow: hidden;
 }
 
+
 /*
 * Arena part
 */
@@ -155,8 +156,14 @@ body{
 	margin: 0 auto;
 }
 .alert{
-	align: right;
+	text-align: right;
+	color: red;
 }
+
+.fade{
+	opacity: .6;
+}
+
 /*
 * Prompt de selection
 */

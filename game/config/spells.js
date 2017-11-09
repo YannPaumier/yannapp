@@ -51,7 +51,7 @@ module.exports = {
       speed: 30,
       assignment: function (spell, character, target){
         var damage = this.damage;
-        character.spellAffection = { newX: null , newY: null, newAngle: null, newSpeed: 2, timeout: 5000 };
+        character.spellAffection = { newX: null , newY: null, newAngle: null, newSpeed: 2, cooldown: this.cooldown, timeout: 5000 };
       },
     },
   },
@@ -74,7 +74,7 @@ module.exports = {
         var speedY = -100 * Math.cos(alpha);
         var newX = character.x + speedX;
         var newY = character.y + speedY;
-        character.spellAffection = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 };
+        character.spellAffection = { newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: 0 };
       },
     },
   },
@@ -103,10 +103,10 @@ module.exports = {
         if( distanceXY < 300 ){
           newX = target.x;
           newY = target.y;
-          character.spellAffection = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 };
+          character.spellAffection = { newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: 0 };
 
           target.hp -= this.damage;
-          target.spellAffection = { newX: null , newY: null, newAngle: null, newSpeed: 0, timeout: 3000 };
+          target.spellAffection = { newX: null , newY: null, newAngle: null, newSpeed: 0, cooldown: this.cooldown, timeout: 3000 };
         }else{
           return;
         }
@@ -129,7 +129,7 @@ module.exports = {
         var distanceXY = Math.sqrt( Math.pow((target.x - character.x), 2) +  Math.pow((target.y - character.y), 2) );
         if( distanceXY < 300 ){
         target.hp -= this.damage;
-        target.spellAffection = { newX: null , newY: null, newAngle: null, newSpeed: 2, timeout: 5000 };
+        target.spellAffection = { newX: null , newY: null, newAngle: null, newSpeed: 2, cooldown: this.cooldown, timeout: 5000 };
       }
 
       },

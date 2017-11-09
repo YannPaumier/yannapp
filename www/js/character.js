@@ -75,9 +75,6 @@ Character.prototype = {
     this.$body.css('width', this.w);
     this.$body.css('height', this.h);
 
-    // Set pointer on other characters
-    $('.character').not('#' + this.id).css('cursor', 'crosshair');
-
     // Ajout des infos du character
     this.$arena.append('<div id="info-' + this.id + '" class="info"></div>');
     this.$info = $('#info-' + this.id);
@@ -92,6 +89,9 @@ Character.prototype = {
   },
 
   refresh: function () {
+    // Set pointer on other characters
+    $('.character').not('#' + this.id).css('cursor', 'crosshair');
+
     this.$body.css('left', this.x - (this.w / 2) + 'px');
     this.$body.css('top', this.y - (this.h / 2)  + 'px');
 
@@ -103,12 +103,22 @@ Character.prototype = {
     this.$info.find('.hp-bar').css('width', (this.hp * 100) / this.initHp + 'px');
     this.$info.find('.hp-bar').css('background-color', getGreenToRed((this.hp * 100) / this.initHp));
     this.$info.find('.hp').text(this.hp);
+
+    if(this.isMoving){
+			this.$info.addClass('fade');
+		}else{
+			this.$info.removeClass('fade');
+		}
+
   },
 
   updateHp: function (hp) {
     var diffHp = hp - this.hp;
     this.hp = hp;
-    this.$info.find('.alert').text(diffHp);
+    if(diffHp != 0){
+    this.$info.find('.alert').text(diffHp).fadeIn("fast");
+    this.$info.find('.alert').text(diffHp).fadeOut("slow");
+  }
   },
 
   setControls: function () {
@@ -180,7 +190,7 @@ Character.prototype = {
         break;
       }
     }).mousemove(function (e) { //Detect mouse for aiming
-      if( e.target.id != ''  && $('#' + e.target.id).hasClass( 'character' )  ){
+      if( e.target.id != '' && $('#' + e.target.id).not('#' + t.id).hasClass( 'character' )  ){
         t.targetId = e.target.id;
       }
       t.mx = e.pageX - t.$arena.offset().left;
@@ -260,7 +270,7 @@ Character.prototype = {
       this.x += moveX;
     }
 
-    if (!collision && this.y + moveY > (0 + ARENA_MARGIN) && (this.y + moveY) < (this.$arena.height() - ARENA_MARGIN)) {
+    if (!collision && this.y + moveY > (- 30 + ARENA_MARGIN) && (this.y + moveY) < (this.$arena.height() - ARENA_MARGIN - 30)) {
       this.y += moveY;
     }
 
@@ -449,7 +459,7 @@ Character.prototype = {
   },
 
   affectSpell: function( newData ){
-      //newData = { newX: newX , newY: newY, newAngle: null, newSpeed: null, timeout: 0 }
+      //newData = { newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: , timeout: 0 }
 
       var initX = this.x;
       var initY = this.y;
@@ -468,6 +478,8 @@ Character.prototype = {
         };
 
         var tang = calculTang(this.x, this.y);
+
+
         //console.log('Tang : ' + tang);
         while ( tang > 10) {
           //console.log('oldx : ' + t.x + ' newx : ' + newData.newX + ' oldy : ' + t.y + ' newy : ' + newData.newY);
