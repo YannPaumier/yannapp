@@ -14,8 +14,10 @@ module.exports = {
       cooldown: '0',
       speed: 10,
       assignment: function (spell, character, target){
-        var damage = this.damage;
-        target.hp -= damage;
+        if( target != null){
+          var damage = this.damage;
+          target.hp -= damage;
+        }
       },
     },
   },
@@ -54,8 +56,10 @@ module.exports = {
       cooldown: '5',
       speed: 30,
       assignment: function (spell, character, target){
-        var damage = this.damage;
+      if( target != null){
+        target.hp -= this.damage;
         target.spellAffection = { idSpell: s2, newX: null , newY: null, newAngle: null, newSpeed: 2, cooldown: this.cooldown, timeout: 5000 };
+      }
       },
     },
   },
@@ -72,6 +76,7 @@ module.exports = {
       cooldown: '2',
       speed: 30,
       assignment: function (spell, character, target){
+      if( target != null && character != null ){
         character.hp -= this.damage;
         var alpha = spell.alpha;
         var speedX = 100 * Math.sin(alpha);
@@ -79,6 +84,7 @@ module.exports = {
         var newX = character.x + speedX;
         var newY = character.y + speedY;
         target.spellAffection = { idSpell: s6, newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: 0 };
+      }
       },
     },
   },
@@ -99,21 +105,22 @@ module.exports = {
       cooldown: '2',
       speed: 10,
       assignment: function (spell, character, target){
+          if( target != null && character != null ){
+            var newX;
+            var newY;
+            var distanceXY = Math.sqrt( Math.pow((target.x - character.x), 2) +  Math.pow((target.y - character.y), 2) );
 
-        var newX;
-        var newY;
-        var distanceXY = Math.sqrt( Math.pow((target.x - character.x), 2) +  Math.pow((target.y - character.y), 2) );
+            if( distanceXY < 300 ){
+              newX = target.x;
+              newY = target.y;
+              character.spellAffection = { idSpell: s3, newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: 0 };
 
-        if( distanceXY < 300 ){
-          newX = target.x;
-          newY = target.y;
-          character.spellAffection = { idSpell: s3, newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: 0 };
-
-          target.hp -= this.damage;
-          target.spellAffection = { idSpell: s3, newX: null , newY: null, newAngle: null, newSpeed: 0, cooldown: null, timeout: 3000 };
-        }else{
-          return;
-        }
+              target.hp -= this.damage;
+              target.spellAffection = { idSpell: s3, newX: null , newY: null, newAngle: null, newSpeed: 0, cooldown: null, timeout: 3000 };
+            }else{
+              return;
+            }
+          }
       },
     },
   },
@@ -130,12 +137,13 @@ module.exports = {
       cooldown: '5',
       speed: 10,
       assignment: function (spell, character, target){
-        var distanceXY = Math.sqrt( Math.pow((target.x - character.x), 2) +  Math.pow((target.y - character.y), 2) );
-        if( distanceXY < 300 ){
-        target.hp -= this.damage;
-        target.spellAffection = { idSpell: s4, newX: null , newY: null, newAngle: null, newSpeed: 2, cooldown: this.cooldown, timeout: 5000 };
+        if( target != null ){
+          var distanceXY = Math.sqrt( Math.pow((target.x - character.x), 2) +  Math.pow((target.y - character.y), 2) );
+          if( distanceXY < 300 ){
+          target.hp -= this.damage;
+          target.spellAffection = { idSpell: s4, newX: null , newY: null, newAngle: null, newSpeed: 2, cooldown: this.cooldown, timeout: 5000 };
+        }
       }
-
       },
     },
   },
@@ -149,12 +157,14 @@ module.exports = {
     isProjectile: false,
     level1: {
       damage: '2',
-      cooldown: '2',
+      cooldown: '10',
       speed: 10,
       assignment: function (spell, character, target){
-        character.hp -= this.damage;
+        character.hp += 200;
+        character.spellAffection = { idSpell: s5, newX: null , newY: null, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: null };
+        //character.hp -= this.damage;
         //character.speed -= 5;
-        return character;
+
       },
     },
   },
