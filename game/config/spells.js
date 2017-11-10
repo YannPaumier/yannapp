@@ -15,7 +15,7 @@ module.exports = {
       speed: 10,
       assignment: function (spell, character, target){
         var damage = this.damage;
-        character.hp -= damage;
+        target.hp -= damage;
       },
     },
   },
@@ -32,8 +32,12 @@ module.exports = {
       cooldown: '3',
       speed: 20,
       assignment: function (spell, character, target){
-        character.hp -= this.damage;
-        //return character;
+        if( target != null){
+          target.hp -= this.damage;
+        }
+        if (character != null){
+        character.spellAffection = { idSpell: 's1', newX: null , newY: null, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: null };
+        }
       },
     },
   },
@@ -51,7 +55,7 @@ module.exports = {
       speed: 30,
       assignment: function (spell, character, target){
         var damage = this.damage;
-        character.spellAffection = { newX: null , newY: null, newAngle: null, newSpeed: 2, cooldown: this.cooldown, timeout: 5000 };
+        target.spellAffection = { idSpell: s2, newX: null , newY: null, newAngle: null, newSpeed: 2, cooldown: this.cooldown, timeout: 5000 };
       },
     },
   },
@@ -74,7 +78,7 @@ module.exports = {
         var speedY = -100 * Math.cos(alpha);
         var newX = character.x + speedX;
         var newY = character.y + speedY;
-        character.spellAffection = { newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: 0 };
+        target.spellAffection = { idSpell: s6, newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: 0 };
       },
     },
   },
@@ -103,10 +107,10 @@ module.exports = {
         if( distanceXY < 300 ){
           newX = target.x;
           newY = target.y;
-          character.spellAffection = { newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: 0 };
+          character.spellAffection = { idSpell: s3, newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: 0 };
 
           target.hp -= this.damage;
-          target.spellAffection = { newX: null , newY: null, newAngle: null, newSpeed: 0, cooldown: this.cooldown, timeout: 3000 };
+          target.spellAffection = { idSpell: s3, newX: null , newY: null, newAngle: null, newSpeed: 0, cooldown: null, timeout: 3000 };
         }else{
           return;
         }
@@ -129,7 +133,7 @@ module.exports = {
         var distanceXY = Math.sqrt( Math.pow((target.x - character.x), 2) +  Math.pow((target.y - character.y), 2) );
         if( distanceXY < 300 ){
         target.hp -= this.damage;
-        target.spellAffection = { newX: null , newY: null, newAngle: null, newSpeed: 2, cooldown: this.cooldown, timeout: 5000 };
+        target.spellAffection = { idSpell: s4, newX: null , newY: null, newAngle: null, newSpeed: 2, cooldown: this.cooldown, timeout: 5000 };
       }
 
       },

@@ -40,6 +40,7 @@ function Character(characterData, isLocal, $arena) {
   };
   this.mx = null;
   this.my = null;
+  this.shortcuts= [];
   this.targetId = null;
 
   /*
@@ -401,8 +402,12 @@ Character.prototype = {
 
     var b = this;
 
+    // Get spell
+    var idSpell = b.shortcuts[action];
+    var spell =  b.spells[idSpell];
+
     // Set du mouvement pour animation
-    if(this.spells[action].isAttack){
+    if(spell.isAttack){
       b.isAttacking = true;
       setTimeout(function(){
           b.isAttacking = false;
@@ -413,13 +418,13 @@ Character.prototype = {
     var clientSpell = {};
 
     clientSpell.ownerId = this.id;
-    clientSpell.idSpell = this.spells[action].id;
+    clientSpell.idSpell = spell.id;
 
     if( this.targetId != ''  && $('#' + this.targetId).hasClass( 'character' )  ){
       clientSpell.targetId = this.targetId;
     }
 
-    if(this.spells[action].isProjectile){
+    if(spell.isProjectile){
       //Just for local balls who have owner
       clientSpell.alpha = this.characterAngle * Math.PI / 180; //angle of shot in radians
       //Set init position
@@ -432,21 +437,22 @@ Character.prototype = {
 
     socket.emit('spell', clientSpell);
 
-    this.cooldown(action);
+    //this.cooldown(action);
   },
 
-  cooldown: function (action){
+  cooldown: function (action, cooldown){
     var t = this;
     //console.log('set du cooldown du spell : ' + spellId + ' cooldwon : '+ t.spells[spellId].cooldown);
 
-    t.globalcd = true;
+    //t.globalcd = true;
     t.cds[action]=true;
 
+    /*
     setTimeout(function(){
       //console.log('set globalcd to false');&
       t.globalcd = false;
     }, 500);
-
+    */
     // Change la couleur du spell en CD
     var spellBlock = $('#block-'+action);
     spellBlock.css('background-color', '#FFE5E5');
@@ -454,12 +460,23 @@ Character.prototype = {
       //console.log('set du spell ' + action +  ' to false');
       spellBlock.css('background-color', '#D3D3D3');
       t.cds[action]=false;
-    }, t.spells[action].cooldown*1000);
+    }, cooldown*1000);
 
   },
 
   affectSpell: function( newData ){
-      //newData = { newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: , timeout: 0 }
+      //newData = { idSpell: S1, newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: , timeout: 0 }
+
+      // Set du CD
+      var t = this;
+      console.log ( 'id spell : ' + newData.idSpell + ' cooldown : ' + newData.cooldown );
+      if(newData.cooldown != null && newData.cooldown > 0 ){
+        for (var k in t.shortcuts) {
+                if (t.shortcuts.hasOwnProperty(k) && t.shortcuts[k] == newData.idSpell) {
+                  t.cooldown(k, newData.cooldown);
+                }
+            }
+      }
 
       var initX = this.x;
       var initY = this.y;

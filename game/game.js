@@ -25,6 +25,7 @@ Game.prototype = {
 
     var character = new Character(this.lastPlayerId, characterData.type, characterData.name);
     this.characters.push(character);
+
     return character;
   },
 
@@ -68,7 +69,7 @@ Game.prototype = {
           console.log('CAC DETECT ON SERVEUR');
           self.attack(spell);
           spell.out = true;
-        }else{    // Sinon
+        }else{   // Sinon
           // affect spells
           self.affectSpells(spell);
 
@@ -80,8 +81,8 @@ Game.prototype = {
             spell.out = true;
           }else {
             spell.fly();
-          }
         }
+      }
       });
     },
 
@@ -95,8 +96,8 @@ Game.prototype = {
 
     affectSpells: function(spell){
       var self = this;
-      var ownerCharacter;
-      var targetCharacter;
+      var ownerCharacter = null;
+      var targetCharacter = null;
       //console.log(' character id : ' + spell.ownerId + ' target id : ' +  spell.targetId);
       this.characters.forEach(function (character) {
         if( character.id == spell.ownerId ){
@@ -115,14 +116,18 @@ Game.prototype = {
     //Detect if spell collides with any character
     detectCollision: function (spell) {
       var self = this;
+      var ownerCharacter;
+      var targetCharacter;
 
       this.characters.forEach(function (character) {
 
         if (character.id != spell.ownerId && Math.abs(character.x - spell.x) < 40 && Math.abs(character.y - spell.y) < 40) {
           //Hit character
-          spell.hurtCharacter(character);
+            spell.hurtCharacter(spell, null, targetCharacter);
         }
       });
+
+
 
       // Detect collisions with obstacles
       var obst1 = { x: 240, y: (HEIGHT) - 459, width: 216, height: 259 };

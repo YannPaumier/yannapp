@@ -19,19 +19,28 @@ Game.prototype = {
       this.localCharacter = c;
 
       this.setLayout(characterData);
+      this.setShortcuts(characterData);
       //this.setControls();
     }else {
       this.characters.push(c);
     }
   },
 
+  setShortcuts: function(characterData){
+      for (var property in characterData.spells) {
+          if (characterData.spells.hasOwnProperty(property)) {
+            this.localCharacter.shortcuts[characterData.spells[property].spellKey] =  property;
+          }
+      }
+      console.log(this.localCharacter.shortcuts);
+  },
 
   setLayout: function(characterData){
     // Set spells layout
     for (var property in characterData.spells) {
       if (characterData.spells.hasOwnProperty(property)) {
           //console.log('name : ' + characterData.spells[property].name);
-          $('#block-'+property).append(characterData.spells[property].name);
+          $('#block-'+characterData.spells[property].spellKey).append(characterData.spells[property].name);
       }
     }
   },

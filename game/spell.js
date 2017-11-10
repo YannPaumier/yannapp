@@ -30,9 +30,9 @@ Spell.prototype = {
     this.y += speedY;
   },
 
-  hurtCharacter: function (character) {
+  hurtCharacter: function (target) {
       var spellInfo = spellsInfos[this.idSpell];
-      spellInfo['level1'].assignment(this, character);
+      spellInfo['level1'].assignment(this, null, target);
       //console.log('HURT');
       this.out = true;
       this.exploding = true;
@@ -43,15 +43,9 @@ Spell.prototype = {
     var idSpell = this.idSpell;
     var spellInfo = spellsInfos[idSpell];
 
-    // Detect isCibled spell
-    if(spellInfo.isCibled && targetCharacter !== undefined && this.ownerId !== undefined){
-      //console.log('owner : ' + ownerCharacter.x +' target : ' + targetCharacter)
-      spellInfo['level1'].assignment(this, ownerCharacter, targetCharacter);
-      this.out = true;
-    }
-    // Detect isSelf spell
-    if(spellInfo.isSelf){
-      spellInfo['level1'].assignment(this, ownerCharacter);
+    spellInfo['level1'].assignment(this, ownerCharacter, targetCharacter);
+
+    if(!spellInfo.isProjectile){
       this.out = true;
     }
 

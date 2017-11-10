@@ -38,7 +38,9 @@ Character.prototype = {
         //console.log('cooldown : ' + spellInfo.level1.cooldown);
         var spellKey = count;
 
-        t.spells[count] = {id: value, name: spellInfo.name, cooldown: spellInfo.level1.cooldown, isAttack: spellInfo.isAttack, isSpell: spellInfo.isSpell, isProjectile: spellInfo.isProjectile, spellKey: spellKey};
+        t.spells[value] = {id: value, name: spellInfo.name, cooldown: spellInfo.level1.cooldown,
+                          isAttack: spellInfo.isAttack, isSpell: spellInfo.isSpell,
+                          isProjectile: spellInfo.isProjectile, spellKey: spellKey};
         count++;
       }
     });
