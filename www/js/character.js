@@ -444,6 +444,10 @@ Character.prototype = {
     var t = this;
     //console.log('set du cooldown du spell : ' + spellId + ' cooldwon : '+ t.spells[spellId].cooldown);
 
+    // Check si cooldown déjà en CD
+    if(t.cds[action]=true){
+      return;
+    }
     //t.globalcd = true;
     t.cds[action]=true;
 
@@ -467,15 +471,19 @@ Character.prototype = {
   affectSpell: function( newData ){
       //newData = { idSpell: S1, newX: newX , newY: newY, newAngle: null, newSpeed: null, cooldown: , timeout: 0 }
 
-      // Set du CD
+      // Confirmatio du CD par le serveur
       var t = this;
       console.log ( 'id spell : ' + newData.idSpell + ' cooldown : ' + newData.cooldown );
-      if(newData.cooldown != null && newData.cooldown > 0 ){
-        for (var k in t.shortcuts) {
-                if (t.shortcuts.hasOwnProperty(k) && t.shortcuts[k] == newData.idSpell) {
-                  t.cooldown(k, newData.cooldown);
-                }
+
+      for (var k in t.shortcuts) {
+        if (t.shortcuts.hasOwnProperty(k) && t.shortcuts[k] == newData.idSpell) {
+          if(newData.cooldown != null && newData.cooldown > 0 ){
+            t.cooldown(k, newData.cooldown);
             }
+            else if(newData.cooldown == 0 ){
+            t.cds[k]=false;
+            }
+          }
       }
 
       var initX = this.x;
