@@ -127,8 +127,6 @@ Game.prototype = {
         }
       });
 
-
-
       // Detect collisions with obstacles
       var obst1 = { x: 240, y: (HEIGHT) - 459, width: 216, height: 259 };
       var obst2 = { x: 800, y: (HEIGHT) - 459, width: 216, height: 259 };
