@@ -32,7 +32,7 @@ Spell.prototype = {
 
   hurtCharacter: function (target) {
       var spellInfo = spellsInfos[this.idSpell];
-      spellInfo['level1'].assignment(this, null, target);
+      spellInfo['level1'].hurtAssignment(this, null, target);
       //console.log('HURT');
       this.out = true;
       this.exploding = true;
@@ -43,7 +43,7 @@ Spell.prototype = {
     var idSpell = this.idSpell;
     var spellInfo = spellsInfos[idSpell];
 
-    spellInfo['level1'].assignment(this, ownerCharacter, targetCharacter);
+    spellInfo['level1'].launchAssignment(this, ownerCharacter, targetCharacter);
 
     if(!spellInfo.isProjectile){
       this.out = true;
