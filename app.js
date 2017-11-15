@@ -31,7 +31,7 @@ var game = new Game();
  * Set des routes
  */
 require('./routes/index')(app);
-require('./routes/sockets')(app, io, game);
+require('./game/sockets')(app, io, game);
 
 // Setup a default catch-all route that sends back a welcome message in JSON format.
 app.get('*', (req, res) => res.status(200).send({
