@@ -1,10 +1,11 @@
 module.exports = (app, io, game) => {
 
   io.on('connection', function (client) {
-    console.log('User connected');
+    console.log('New user connected');
 
     client.on('joinGame', function (character) {
       character = game.addCharacter({ name: character.name, type: character.type });
+      client.id = character.id;
       //console.log('character hp speed : ' + character.hp + character.speed);
       client.emit('addCharacter', { isLocal: true, character });
       client.broadcast.emit('addCharacter', { isLocal: false, character });
@@ -36,7 +37,13 @@ module.exports = (app, io, game) => {
       //counter ++;
     });
 
-
+    /*
+    * Gestion des deconnexions
+    */
+    client.on('disconnect', function() {
+      console.log('socket id left the game : ' + client.id);
+      game.removeCharacter(client.id);
+    })
 
     client.on('leaveGame', function (characterName, characterId) {
       console.log(characterName + ' has left the game, id : ' + characterId);

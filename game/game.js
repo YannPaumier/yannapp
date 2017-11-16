@@ -6,12 +6,11 @@ var WIDTH = 1280;
 var HEIGHT = 720;
 
 function Game() {
+  this.SOCKET_LIST = [];  // à voir ?
   this.CHARACTER_LIST = [];
   this.SPELL_LIST = [];
   this.BULLET_LIST = [];
 
-  this.lastSpellId = 0;
-  this.lastPlayerId = 0;
 }
 
 Game.prototype = {
@@ -19,38 +18,30 @@ Game.prototype = {
   addCharacter: function (characterData) {
     console.log('new player');
 
-    this.lastPlayerId++;
-    if (this.lastPlayerId > 1000) {
-      this.lastPlayerId = 0;
-    }
-
-    var character = new Character(this.lastPlayerId, characterData.type, characterData.name);
+    var character = new Character(characterData.type, characterData.name);
     this.CHARACTER_LIST.push(character);
+    //console.log("charachter id "+this.lastPlayerId+' name : '+this.CHARACTER_LIST[1].name);
 
     return character;
   },
 
   addSpell: function (spellData) {
-    console.log('add one spell id : ' + spellData.idSpell + ' owner : ' + spellData.ownerId);
+    //console.log('add one spell id : ' + spellData.idSpell + ' owner : ' + spellData.ownerId);
+    //console.log('character list size : ' + this.CHARACTER_LIST.length);
+    //console.log('nom : ' + this.CHARACTER_LIST[spellData.ownerId].name);
 
-    this.lastSpellId++;
-    if (this.lastSpellId > 1000) {
-      this.lastSpellId = 0;
-    }
-
-    var spell = new Spell(this.lastSpellId, spellData.idSpell, spellData.ownerId, spellData.targetId, spellData.alpha, spellData.x, spellData.y );
-
-    this.spells.push(spell);
+    var spell = new Spell(spellData.idSpell, spellData.ownerId, spellData.targetId, spellData.alpha, spellData.x, spellData.y );
+    this.SPELL_LIST.push(spell);
   },
 
   removeCharacter: function (characterId) {
-    this.characters = this.characters.filter(
+    this.CHARACTER_LIST = this.CHARACTER_LIST.filter(
       function (t) { return t.id != characterId; });
   },
 
   //Sync character with new data received from a client
   syncCharacter: function (newCharacterData) {
-    this.characters.forEach(function (character) {
+    this.CHARACTER_LIST.forEach(function (character) {
       if (character.id == newCharacterData.id) {
         character.x = newCharacterData.x;
         character.y = newCharacterData.y;
@@ -60,10 +51,10 @@ Game.prototype = {
     });
   },
 
-  //The app has absolute control of the spells and their movement
+  //The app has absolute control of the SPELL_LIST and their movement
   syncSpells: function () {
     var self = this;
-    this.spells.forEach(function (spell) {
+    this.SPELL_LIST.forEach(function (spell) {
 
       // Si CAC
       if (spell.idSpell == 0) {
@@ -88,7 +79,7 @@ Game.prototype = {
   },
 
   attack: function (spell) {
-    this.characters.forEach(function (character) {
+    this.CHARACTER_LIST.forEach(function (character) {
       if(character.id == spell.targetId){
         character.hp -= 100;
       }
@@ -100,7 +91,7 @@ Game.prototype = {
     var ownerCharacter = null;
     var targetCharacter = null;
     //console.log(' character id : ' + spell.ownerId + ' target id : ' +  spell.targetId);
-    this.characters.forEach(function (character) {
+    this.CHARACTER_LIST.forEach(function (character) {
       if (character.id == spell.ownerId) {
         ownerCharacter = character;
       }
@@ -121,7 +112,7 @@ Game.prototype = {
     var ownerCharacter;
     var targetCharacter;
 
-    this.characters.forEach(function (character) {
+    this.CHARACTER_LIST.forEach(function (character) {
 
       if (character.id != spell.ownerId && Math.abs(character.x - spell.x) < 40 && Math.abs(character.y - spell.y) < 40) {
         //Hit character
@@ -154,26 +145,26 @@ Game.prototype = {
     getData: function () {
       var gameData = {};
 
-      gameData.characters = this.characters;
-      gameData.spells = this.spells;
+      gameData.CHARACTER_LIST = this.CHARACTER_LIST;
+      gameData.SPELL_LIST = this.SPELL_LIST;
 
       return gameData;
     },
 
     cleanCharacters: function () {
       // Remove debuff
-      this.characters.forEach(function(c){
+      this.CHARACTER_LIST.forEach(function(c){
         c.spellAffection = null;
       });
 
-      // Remove dead characters
-      this.characters = this.characters.filter(function (t) {
+      // Remove dead CHARACTER_LIST
+      this.CHARACTER_LIST = this.CHARACTER_LIST.filter(function (t) {
         return t.hp > 0;
       });
     },
 
     cleanSpells: function () {
-      this.spells = this.spells.filter(function (spell) {
+      this.SPELL_LIST = this.SPELL_LIST.filter(function (spell) {
         return !spell.out;
       });
     },

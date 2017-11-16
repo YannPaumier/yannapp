@@ -1,9 +1,10 @@
+var helpers = require('../game/helpers.js');
 var spellsInfos = require('./config/spells.js');
 
-function Spell(id, idSpell, ownerId, targetId, alpha, x, y) {
+function Spell(idSpell, ownerId, targetId, alpha, x, y) {
   //console.log ('newBall : '+ownerId+ ' : ' + alpha + ' : ' + x + ' : ' +y );
 
-  this.id = id;
+  this.id = helpers.generateId();
   this.idSpell = idSpell;
   this.ownerId = ownerId;
   this.targetId = targetId;

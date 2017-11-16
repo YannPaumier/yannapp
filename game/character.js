@@ -1,8 +1,8 @@
 var helpers = require('../game/helpers.js');
 var spellsInfos = require('./config/spells.js');
 
-function Character(id, type, name) {
-  this.id = id;
+function Character(type, name) {
+  this.id = helpers.generateId();
   this.name = name;
   this.type = type;
 

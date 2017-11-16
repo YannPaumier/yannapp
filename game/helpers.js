@@ -1,5 +1,15 @@
 var characters = require('./config/characters.js');
 
+var lastId = 0;
+
+exports.generateId = function () {
+  lastId++;
+  if (lastId > 1000) {
+    lastId = 0;
+  }
+  return lastId;
+}
+
 exports.getCharacterInfos = function (type) {
   switch (type) {
     case 1:
