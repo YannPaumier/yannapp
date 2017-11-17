@@ -1,7 +1,12 @@
-var helpers = require('../game/helpers.js');
+var helpers = require('./helpers.js');
 var spellsInfos = require('./config/spells.js');
+var SharedCharacter = require('../shared/SharedCharacter');
 
 function Character(type, name) {
+  // Get shared
+  SharedCharacter.x = 50;
+  console.log(SharedCharacter.x);
+
   this.id = helpers.generateId();
   this.name = name;
   this.type = type;

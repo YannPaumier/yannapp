@@ -40,18 +40,6 @@ Spell.prototype = {
       //console.log('new X : ' +character.buffDebuff.newX);
   },
 
-  affectSpell: function (ownerCharacter, targetCharacter){
-    var idSpell = this.idSpell;
-    var spellInfo = spellsInfos[idSpell];
-
-    spellInfo['level1'].launchAssignment(this, ownerCharacter, targetCharacter);
-
-    if(!spellInfo.isProjectile){
-      this.out = true;
-    }
-
-  },
-
 };
 
 module.exports = Spell;

@@ -13,7 +13,7 @@ module.exports = {
       damage: '20',
       cooldown: '1',
       speed: 10,
-      launchAssignment: function (spell, character, target){
+      spellAssignments: function (spell, character, target){
         if (character != null){
           character.spellAffection = { idSpell: 's0', newX: null , newY: null, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: null };
         }
@@ -38,7 +38,7 @@ module.exports = {
       damage: '80',
       cooldown: '3',
       speed: 30,
-      launchAssignment: function (spell, character, target){
+      spellAssignments: function (spell, character, target){
         if (character != null){
         character.spellAffection = { idSpell: 's1', newX: null , newY: null, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: null };
         }
@@ -62,7 +62,7 @@ module.exports = {
       damage: '2',
       cooldown: '5',
       speed: 30,
-      launchAssignment: function (spell, character, target){
+      spellAssignments: function (spell, character, target){
         if (character != null){
           character.spellAffection = { idSpell: 's2', newX: null , newY: null, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: null };
         }
@@ -87,7 +87,7 @@ module.exports = {
       damage: '2',
       cooldown: '2',
       speed: 30,
-      launchAssignment: function (spell, character, target){
+      spellAssignments: function (spell, character, target){
         if( character != null ){
           character.spellAffection = { idSpell: 's6', newX: null , newY: null, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: null };
         }
@@ -121,7 +121,7 @@ module.exports = {
       damage: '30',
       cooldown: '2',
       speed: 10,
-      launchAssignment: function (spell, character, target){
+      spellAssignments: function (spell, character, target){
           if( target != null && character != null ){
             var newX;
             var newY;
@@ -153,7 +153,7 @@ module.exports = {
       damage: '120',
       cooldown: '5',
       speed: 10,
-      launchAssignment: function (spell, character, target){
+      spellAssignments: function (spell, character, target){
         if( target != null ){
           var distanceXY = Math.sqrt( Math.pow((target.x - character.x), 2) +  Math.pow((target.y - character.y), 2) );
           if( distanceXY < 300 ){
@@ -176,7 +176,7 @@ module.exports = {
       damage: '2',
       cooldown: '10',
       speed: 10,
-      launchAssignment: function (spell, character, target){
+      spellAssignments: function (spell, character, target){
         character.hp += 200;
         character.spellAffection = { idSpell: 's5', newX: null , newY: null, newAngle: null, newSpeed: null, cooldown: this.cooldown, timeout: null };
         //character.hp -= this.damage;

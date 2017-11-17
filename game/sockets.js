@@ -11,7 +11,7 @@ module.exports = (app, io, game) => {
       client.broadcast.emit('addCharacter', { isLocal: false, character });
     });
 
-    client.on('spell', function (spellData) {
+    client.on('spellRequest', function (spellData) {
       game.addSpell(spellData);
     });
 
@@ -23,7 +23,7 @@ module.exports = (app, io, game) => {
       }
 
       //update ball positions
-      game.syncSpells();
+      game.syncBullets();
 
       //Broadcast data to clients
       client.emit('sync', game.getData());

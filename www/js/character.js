@@ -6,6 +6,7 @@ function Character(characterData, isLocal, $arena) {
   /*
   * Character infos
   */
+  var self = SharedCharacter();
   this.id = characterData.id;
   this.name = characterData.name;
   this.type = characterData.type;

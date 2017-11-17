@@ -2,7 +2,7 @@ var INTERVAL = 20;
 
 function Game() {
   //this.localCharacter = '';
-  this.characters = []; //Characters (other than the local character)
+  CHARACTER_LIST = []; //CHARACTER_LIST (other than the local character)
   this.$arena = $('#arena');
 
   var g = this;
@@ -22,7 +22,7 @@ Game.prototype = {
       this.setShortcuts(characterData);
       //this.setControls();
     }else {
-      this.characters.push(c);
+      CHARACTER_LIST.push(c);
     }
   },
 
@@ -47,7 +47,7 @@ Game.prototype = {
 
   removeCharacter: function (characterId) {
     //Remove character object
-    this.characters = this.characters.filter(function (c) {return c.id != characterId });
+    CHARACTER_LIST = CHARACTER_LIST.filter(function (c) {return c.id != characterId });
     //remove character from dom
     console.log('remove id : '+characterId)
     $('#' + characterId).remove();
@@ -93,7 +93,6 @@ Game.prototype = {
       x: this.localCharacter.x,
       y: this.localCharacter.y,
       characterAngle: this.localCharacter.characterAngle,
-      isMoving: this.localCharacter.isMoving,
     };
     gameData.character = c;
 
@@ -106,8 +105,8 @@ Game.prototype = {
     var game = this;
     //console.log('receive data from server : ');
 
-    // Render characters
-    serverData.characters.forEach(function (serverCharacter) {
+    // Render CHARACTER_LIST
+    serverData.CHARACTER_LIST.forEach(function (serverCharacter) {
 
         //Update local character stats
         if (game.localCharacter !== undefined && serverCharacter.id == game.localCharacter.id) {
@@ -128,9 +127,9 @@ Game.prototype = {
           }
         }
 
-        //Update foreign characters
+        //Update foreign CHARACTER_LIST
         var found = false;
-        game.characters.forEach(function (clientCharacter) {
+        CHARACTER_LIST.forEach(function (clientCharacter) {
           //console.log('Id : ' + clientCharacter.id + ' x : ' + clientCharacter.x + ' y : ' + clientCharacter.y);
           //update foreign tanks
           if (clientCharacter.id === serverCharacter.id) {
@@ -160,7 +159,7 @@ Game.prototype = {
     //Render spells
     game.$arena.find('*[class^="spell-"]').remove();
 
-    serverData.spells.forEach(function (serverSpell) {
+    serverData.SPELL_LIST.forEach(function (serverSpell) {
       //console.log('new ball : '+serverSpell.y);
       var s = new Spell(serverSpell.id, serverSpell.idSpell, serverSpell.ownerId, serverSpell.isProjectile, game.$arena, serverSpell.x, serverSpell.y);
       s.exploding = serverSpell.exploding;
