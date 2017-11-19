@@ -25,13 +25,13 @@ Game.prototype = {
     return character;
   },
 
-  addSpell: function (spellData) {
+  addBullet: function (spellData) {
     //console.log('add one spell id : ' + spellData.idSpell + ' owner : ' + spellData.ownerId);
     //console.log('character list size : ' + CHARACTER_LIST.length);
     //console.log('nom : ' + CHARACTER_LIST[spellData.ownerId].name);
 
     var spell = new Spell(spellData.idSpell, spellData.ownerId, spellData.targetId, spellData.alpha, spellData.x, spellData.y );
-    SPELL_LIST.push(spell);
+    this.SPELL_LIST.push(spell);
   },
 
   removeCharacter: function (characterId) {

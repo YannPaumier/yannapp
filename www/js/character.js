@@ -101,7 +101,7 @@ Character.prototype = {
 
     this.$info.css('left', (this.x) + 'px');
     this.$info.css('top', (this.y) + 'px');
-    
+
     this.$info.find('.hp-bar').css('width', (this.hp * 100) / this.initHp + 'px');
     this.$info.find('.hp-bar').css('background-color', getGreenToRed((this.hp * 100) / this.initHp));
     this.$info.find('.hp').text(this.hp);
@@ -192,6 +192,7 @@ Character.prototype = {
         break;
       }
     }).mousemove(function (e) { //Detect mouse for aiming
+      // Detect mouse target
       if( e.target.id != '' && $('#' + e.target.id).not('#' + t.id).hasClass( 'character' )  ){
         t.targetId = e.target.id;
       }
@@ -212,7 +213,6 @@ Character.prototype = {
     /*
     * Gestion des déplaceemnts
     */
-
     // Indique si le joueur est en déplacement
     if (this.dir.up || this.dir.down || this.dir.left || this.dir.right) {
       this.isMoving = true;
@@ -247,8 +247,6 @@ Character.prototype = {
     /*
     * Detection des collisions
     */
-    var collisionX = false;
-    var collisionY = false;
     var collision = false;
 
     var obst1 = { x: 240, y: (this.$arena.height()) - 459, width: 216, height: 259 };
@@ -391,13 +389,9 @@ Character.prototype = {
   },
 
   spell: function (action) {
-    // If dead
-    if (this.dead) {
-      return;
-    }
 
-    // InCd
-    if (this.globalcd || this.cds[action]){
+    // If dead or InCd
+    if (this.dead || this.globalcd || this.cds[action]){
       return;
     }
 
@@ -436,7 +430,7 @@ Character.prototype = {
       clientSpell.y = this.y - deltaY - 5;
     }
 
-    socket.emit('spell', clientSpell);
+    socket.emit('spellRequest', clientSpell);
 
     //this.cooldown(action);
   },

@@ -5,7 +5,6 @@ module.exports = (app, io, game) => {
 
     client.on('joinGame', function (character) {
       character = game.addCharacter({ name: character.name, type: character.type });
-      client.id = character.id;
       //console.log('character hp speed : ' + character.hp + character.speed);
       client.emit('addCharacter', { character, isLocal: true });
       client.broadcast.emit('addCharacter', { character, isLocal: false });
