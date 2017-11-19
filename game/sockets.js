@@ -7,8 +7,8 @@ module.exports = (app, io, game) => {
       character = game.addCharacter({ name: character.name, type: character.type });
       client.id = character.id;
       //console.log('character hp speed : ' + character.hp + character.speed);
-      client.emit('addCharacter', { isLocal: true, character });
-      client.broadcast.emit('addCharacter', { isLocal: false, character });
+      client.emit('addCharacter', { character, isLocal: true });
+      client.broadcast.emit('addCharacter', { character, isLocal: false });
     });
 
     client.on('spellRequest', function (spellData) {

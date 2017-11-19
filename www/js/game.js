@@ -2,7 +2,7 @@ var INTERVAL = 20;
 
 function Game() {
   //this.localCharacter = '';
-  CHARACTER_LIST = []; //CHARACTER_LIST (other than the local character)
+  this.CHARACTER_LIST = []; //CHARACTER_LIST (other than the local character)
   this.$arena = $('#arena');
 
   var g = this;
@@ -13,17 +13,17 @@ function Game() {
 
 Game.prototype = {
 
-  addCharacter: function (characterData, isLocal) {
-    var c = new Character(characterData, isLocal, this.$arena);
-    if (isLocal) {
-      this.localCharacter = c;
+  addCharacter: function ( characterData, isLocal ) {
+      c = new Character( characterData, isLocal, this.$arena );
+      if (isLocal) {
+        this.localCharacter = c;
 
-      this.setLayout(characterData);
-      this.setShortcuts(characterData);
-      //this.setControls();
-    }else {
-      CHARACTER_LIST.push(c);
-    }
+        this.setLayout(characterData);
+        this.setShortcuts(characterData);
+
+      }else {
+        this.CHARACTER_LIST.push(c);
+      }
   },
 
   setShortcuts: function(characterData){
@@ -47,7 +47,7 @@ Game.prototype = {
 
   removeCharacter: function (characterId) {
     //Remove character object
-    CHARACTER_LIST = CHARACTER_LIST.filter(function (c) {return c.id != characterId });
+    this.CHARACTER_LIST = this.CHARACTER_LIST.filter(function (c) {return c.id != characterId });
     //remove character from dom
     console.log('remove id : '+characterId)
     $('#' + characterId).remove();
@@ -129,7 +129,7 @@ Game.prototype = {
 
         //Update foreign CHARACTER_LIST
         var found = false;
-        CHARACTER_LIST.forEach(function (clientCharacter) {
+        game.CHARACTER_LIST.forEach(function (clientCharacter) {
           //console.log('Id : ' + clientCharacter.id + ' x : ' + clientCharacter.x + ' y : ' + clientCharacter.y);
           //update foreign tanks
           if (clientCharacter.id === serverCharacter.id) {

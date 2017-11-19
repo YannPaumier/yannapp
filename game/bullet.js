@@ -24,6 +24,27 @@ Bullet.prototype = {
     var speedY = - speed * Math.cos(this.alpha);
     this.x += speedX;
     this.y += speedY;
+
+    // Detect collisions with obstacles
+    var HEIGHT = 720;
+    var obst1 = { x: 240, y: (HEIGHT) - 459, width: 216, height: 259 };
+    var obst2 = { x: 800, y: (HEIGHT) - 459, width: 216, height: 259 };
+    var collision = false;
+    if (obst1.x < this.x - 20 &&
+      obst1.x + obst1.width > this.x + 20 &&
+      obst1.y < (HEIGHT - this.y) - 40 &&
+      obst1.height + obst1.y > (HEIGHT - this.y) + 40 ) {
+        this.out = true;
+        this.exploding = true;
+      }
+
+      if (obst2.x < this.x - 20 &&
+        obst2.x + obst2.width > this.x + 20 &&
+        obst2.y < (HEIGHT - this.y) - 40 &&
+        obst2.height + obst2.y > (HEIGHT - this.y) + 40 ) {
+          this.out = true;
+          this.exploding = true;
+      }
   },
 
   hurtCharacter: function (target) {

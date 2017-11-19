@@ -101,7 +101,7 @@ Character.prototype = {
 
     this.$info.css('left', (this.x) + 'px');
     this.$info.css('top', (this.y) + 'px');
-
+    
     this.$info.find('.hp-bar').css('width', (this.hp * 100) / this.initHp + 'px');
     this.$info.find('.hp-bar').css('background-color', getGreenToRed((this.hp * 100) / this.initHp));
     this.$info.find('.hp').text(this.hp);
