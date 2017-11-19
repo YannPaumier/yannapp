@@ -11,7 +11,7 @@ module.exports = (app, io, game) => {
     });
 
     client.on('spellRequest', function (spellData) {
-      game.addSpell(spellData);
+      game.spellRequest(spellData);
     });
 
     client.on('sync', function (data) {
@@ -31,7 +31,7 @@ module.exports = (app, io, game) => {
       //Cleanup after sending data, so the clients know
       //when the character dies and when the balls explode
       game.cleanCharacters();
-      game.cleanSpells();
+      game.cleanBullets();
 
       //counter ++;
     });

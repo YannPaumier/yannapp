@@ -1,9 +1,10 @@
 var spellsInfos = require('./config/spells.js');
+var helpers = require('./helpers.js');
 
-function Bullet(id, idSpell, ownerId, alpha, x, y) {
-  //console.log ('newBall : '+ownerId+ ' : ' + alpha + ' : ' + x + ' : ' +y );
+function Bullet( idSpell, ownerId, alpha, x, y) {
+  console.log ('newBall : '+ownerId+ ' : ' + alpha + ' : ' + x + ' : ' +y + ' idSpell : ' + idSpell);
 
-  this.id = id;
+  this.id = helpers.generateId();
   this.idSpell = idSpell;
   this.ownerId = ownerId;
   this.alpha = alpha; //angle of shot in radians
@@ -58,4 +59,4 @@ Bullet.prototype = {
 
 };
 
-module.exports = Spell;
+module.exports = Bullet;

@@ -1,4 +1,5 @@
 var Spell = require('./spell.js');
+var Bullet = require('./bullet.js');
 var helpers = require('../game/helpers.js');
 var Character = require('./character.js');
 var spellsInfos = require('./config/spells.js');
@@ -7,9 +8,8 @@ var WIDTH = 1280;
 var HEIGHT = 720;
 
 function Game() {
-  this.SOCKET_LIST = [];  // à voir ?
   this.CHARACTER_LIST = [];
-  this.SPELL_LIST = [];
+  //this.SPELL_LIST = [];
   this.BULLET_LIST = [];
 }
 
@@ -25,13 +25,39 @@ Game.prototype = {
     return character;
   },
 
-  addBullet: function (spellData) {
-    //console.log('add one spell id : ' + spellData.idSpell + ' owner : ' + spellData.ownerId);
-    //console.log('character list size : ' + CHARACTER_LIST.length);
-    //console.log('nom : ' + CHARACTER_LIST[spellData.ownerId].name);
+  spellRequest: function (spellData) {
+    //spellData.idSpell, spellData.ownerId, spellData.targetId, spellData.alpha, spellData.x, spellData.y
 
-    var spell = new Spell(spellData.idSpell, spellData.ownerId, spellData.targetId, spellData.alpha, spellData.x, spellData.y );
-    this.SPELL_LIST.push(spell);
+    var idSpell = spellData.idSpell;
+    var spellInfo = spellsInfos[idSpell];
+
+
+    var ownerCharacter = null;
+    var targetCharacter = null;
+    //console.log(' character id : ' + spell.ownerId + ' target id : ' +  spell.targetId);
+
+    for(var i = 0, len = this.CHARACTER_LIST.length; i < len; i++) {
+      if (this.CHARACTER_LIST[i].id == spellData.ownerId) {
+        ownerCharacter = this.CHARACTER_LIST[i];
+      }
+
+      if (this.CHARACTER_LIST[i].id == spellData.targetId) {
+        //console.log('target find : ' + character.id);
+        targetCharacter = this.CHARACTER_LIST[i];
+      }
+    }
+
+    spellInfo['level1'].spellAssignments(this, ownerCharacter, targetCharacter);
+    if ( spellInfo.isProjectile ) {
+      this.addBullet( spellData );
+    }
+  },
+
+  addBullet: function (spellData) {
+    console.log('add one spell id : ' + spellData.idSpell + ' owner : ' + spellData.ownerId);
+
+    var bullet = new Bullet( spellData.idSpell, spellData.ownerId, spellData.alpha, spellData.x, spellData.y );
+    this.BULLET_LIST.push(bullet);
   },
 
   removeCharacter: function (characterId) {
@@ -54,42 +80,15 @@ Game.prototype = {
   syncBullets: function () {
     var self = this;
 
-    for(var i = 0, len = this.SPELL_LIST.length; i < len; i++) {
-      self.detectCollision(this.SPELL_LIST[i]);
+    for(var i = 0, len = this.BULLET_LIST.length; i < len; i++) {
+      self.detectCollision(this.BULLET_LIST[i]);
       //Detect when ball is out of bounds
-      if (this.SPELL_LIST[i].x < 0 || this.SPELL_LIST[i].x > WIDTH || this.SPELL_LIST[i].y < 0 || this.SPELL_LIST[i].y > HEIGHT) {
-        this.SPELL_LIST[i].out = true;
+      if (this.BULLET_LIST[i].x < 0 || this.BULLET_LIST[i].x > WIDTH || this.BULLET_LIST[i].y < 0 || this.BULLET_LIST[i].y > HEIGHT) {
+        this.BULLET_LIST[i].out = true;
       }else {
-        this.SPELL_LIST[i].fly();
+        this.BULLET_LIST[i].fly();
       }
     }
-
-  },
-
-  spellRequest: function (spellData) {
-    //spellData.idSpell, spellData.ownerId, spellData.targetId, spellData.alpha, spellData.x, spellData.y
-
-    var idSpell = spellData.idSpell;
-    var spellInfo = spellsInfos[idSpell];
-
-
-    var ownerCharacter = null;
-    var targetCharacter = null;
-    //console.log(' character id : ' + spell.ownerId + ' target id : ' +  spell.targetId);
-
-    for(var i = 0, len = this.CHARACTER_LIST.length; i < len; i++) {
-      if (this.CHARACTER_LIST[i].id == spell.ownerId) {
-        ownerCharacter = this.CHARACTER_LIST[i];
-      }
-
-      if (this.CHARACTER_LIST[i].id == spell.targetId) {
-        //console.log('target find : ' + character.id);
-        targetCharacter = this.CHARACTER_LIST[i];
-      }
-    }
-
-    spellInfo['level1'].spellAssignments(this, ownerCharacter, targetCharacter);
-
   },
 
   //Detect if spell collides with any character
@@ -107,32 +106,32 @@ Game.prototype = {
 
   },
 
-    getData: function () {
-      var gameData = {};
+  getData: function () {
+    var gameData = {};
 
-      gameData.CHARACTER_LIST = this.CHARACTER_LIST;
-      gameData.SPELL_LIST = this.SPELL_LIST;
+    gameData.CHARACTER_LIST = this.CHARACTER_LIST;
+    gameData.BULLET_LIST = this.BULLET_LIST;
 
-      return gameData;
-    },
+    return gameData;
+  },
 
-    cleanCharacters: function () {
-      // Remove debuff
-      this.CHARACTER_LIST.forEach(function(c){
-        c.spellAffection = null;
-      });
+  cleanCharacters: function () {
+    // Remove debuff
+    this.CHARACTER_LIST.forEach(function(c){
+      c.spellAffection = null;
+    });
 
-      // Remove dead CHARACTER_LIST
-      this.CHARACTER_LIST = this.CHARACTER_LIST.filter(function (t) {
-        return t.hp > 0;
-      });
-    },
+    // Remove dead CHARACTER_LIST
+    this.CHARACTER_LIST = this.CHARACTER_LIST.filter(function (t) {
+      return t.hp > 0;
+    });
+  },
 
-    cleanSpells: function () {
-      this.SPELL_LIST = this.SPELL_LIST.filter(function (spell) {
-        return !spell.out;
-      });
-    },
-  };
+  cleanBullets: function () {
+    this.BULLET_LIST = this.BULLET_LIST.filter(function (spell) {
+      return !spell.out;
+    });
+  },
+};
 
-  module.exports = Game;
+module.exports = Game;

@@ -159,7 +159,7 @@ Game.prototype = {
     //Render spells
     game.$arena.find('*[class^="spell-"]').remove();
 
-    serverData.SPELL_LIST.forEach(function (serverSpell) {
+    serverData.BULLET_LIST.forEach(function (serverSpell) {
       //console.log('new ball : '+serverSpell.y);
       var s = new Spell(serverSpell.id, serverSpell.idSpell, serverSpell.ownerId, serverSpell.isProjectile, game.$arena, serverSpell.x, serverSpell.y);
       s.exploding = serverSpell.exploding;
